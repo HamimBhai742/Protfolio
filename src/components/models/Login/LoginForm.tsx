@@ -37,7 +37,9 @@ export default function LoginForm() {
         toast.error(user?.message);
       }
       if (user?.success) {
-        router.push('/dashboard');
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+        router.push(redirectTo);
         toast.success(user?.message);
       }
     } catch (error) {

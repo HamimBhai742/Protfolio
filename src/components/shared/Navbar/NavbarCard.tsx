@@ -25,6 +25,42 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
   const router = useRouter();
   const pathname = usePathname();
 
+  // State for secret dashboard easter egg (5 clicks to redirect)
+  const [clickCount, setClickCount] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
+  const [navTimeout, setNavTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (navTimeout) clearTimeout(navTimeout);
+    };
+  }, [navTimeout]);
+
+  const handleNameClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const now = Date.now();
+    let newCount = 1;
+
+    if (now - lastClickTime < 2000) {
+      newCount = clickCount + 1;
+    }
+
+    setClickCount(newCount);
+    setLastClickTime(now);
+
+    if (newCount >= 5) {
+      if (navTimeout) clearTimeout(navTimeout);
+      setClickCount(0);
+      router.push('/dashboard');
+    } else {
+      if (navTimeout) clearTimeout(navTimeout);
+      const timeout = setTimeout(() => {
+        router.push('/');
+      }, 400);
+      setNavTimeout(timeout);
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -80,7 +116,7 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
           }`}
         >
           {/* Logo/Brand */}
-          <Link href='/' className='flex items-center space-x-3 group'>
+          <Link href='/' className='flex items-center space-x-3 group' onClick={handleNameClick}>
             <div className='relative w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300 overflow-hidden'>
               <div className='absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
               <span className='text-white font-extrabold text-lg tracking-wider group-hover:scale-110 transition-transform duration-300'>
