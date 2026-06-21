@@ -1,9 +1,8 @@
 import NavbarCard from './NavbarCard';
+import { getMe } from '@/helpers/getMe';
+
 const Navbar = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-    cache: 'no-store',
-  });
-  const { data: userData } = await res.json();
+  const userData = await getMe();
   return (
     <nav>
       <NavbarCard me={userData} />

@@ -21,7 +21,7 @@ const Footer = async () => {
             {/* Social Links */}
             <div className='flex space-x-4'>
               <a
-                href={me.facebookUrl}
+                href={me?.facebookUrl}
                 target='_blank'
                 className='text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors'
               >

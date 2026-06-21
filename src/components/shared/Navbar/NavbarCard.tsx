@@ -4,13 +4,19 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/toggle/ThemeToggleBtn';
-import { navLinks } from '.';
 import { verifyUser } from '@/helpers/verifyUser';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { logout } from '@/helpers/logout';
 import { LayoutDashboard, LogOut, Menu as MenuIcon, X, Send } from 'lucide-react';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+];
 
 const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: string } }) => {
   const [isOpen, setIsOpen] = useState(false);

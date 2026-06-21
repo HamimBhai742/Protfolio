@@ -12,7 +12,8 @@ export async function middleware(request: NextRequest) {
   try {
     //Call your backend to verify token
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+    const origin = request.nextUrl.origin;
+    const res = await fetch(`${origin}/api/v2/auth/verify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

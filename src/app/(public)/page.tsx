@@ -2,6 +2,10 @@ import Herosection from '@/components/models/Home/Herosection';
 import AboutSection from '@/components/models/Home/AboutSection';
 import ProjectSection from '@/components/models/Home/ProjectSection';
 import BlogsSection from '@/components/models/Home/BlogsSection';
+import { dbConnect } from '@/lib/db';
+import { User } from '@/models/User';
+import { Blog } from '@/models/Blog';
+import { Project } from '@/models/Project';
 
 export const metadata = {
   title: 'Hamim | Portfolio & Projects',
@@ -9,34 +13,35 @@ export const metadata = {
     'Welcome to my personal portfolio website. Explore my projects, blogs, skills, and achievements in web development with React, Next.js, Node.js, and more.',
 };
 
-export default async function Home() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-    cache: 'no-store',
-  });
-  const { data: user } = await res.json();
-  const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog`, {
-    cache: 'no-store',
-  });
-  const { data: blogs } = await res2.json();
+export const dynamic = 'force-dynamic';
 
-  const res3 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
-    cache: 'no-store',
-  });
-  const { data: projects } = await res3.json();
+export default async function Home() {
+  await dbConnect();
+
+  // Query User details
+  const user = await User.findOne().select(
+    'id name email address picture profession experience skills bio role githubUrl facebookUrl linkedInUrl website createdAt updatedAt'
+  );
+
+  // Query Blogs
+  const blogs = await Blog.find({ status: 'published' }).sort({ createdAt: -1 });
+
+  // Query Projects
+  const projects = await Project.find({});
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50  to-blue-50 dark:from-gray-900 dark:to-gray-800'>
       {/* Hero Section */}
-      <Herosection user={user} />
+      <Herosection user={user ? JSON.parse(JSON.stringify(user)) : null} />
 
       {/* About Preview Section */}
-      <AboutSection user={user} />
+      <AboutSection user={user ? JSON.parse(JSON.stringify(user)) : null} />
 
       {/* Featured Projects Section */}
-      <ProjectSection  projects={projects?.slice(0, 3)} />
+      <ProjectSection projects={JSON.parse(JSON.stringify(projects.slice(0, 3)))} />
 
       {/* Latest Blog Posts Section */}
-      <BlogsSection blogs={blogs?.slice(0, 3)} />
-
+      <BlogsSection blogs={JSON.parse(JSON.stringify(blogs.slice(0, 3)))} />
     </div>
   );
 }

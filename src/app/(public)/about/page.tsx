@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from 'next/image';
 import {
   Mail,
@@ -9,16 +8,31 @@ import {
   Linkedin,
   Facebook,
   Calendar,
-  User,
+  User as UserIcon,
 } from 'lucide-react';
 import { snakeToProfession } from '@/helpers/sanakeToProfe';
 import { Key } from 'react';
+import { dbConnect } from '@/lib/db';
+import { User } from '@/models/User';
+
+export const dynamic = 'force-dynamic';
 
 export default async function AboutPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/about`, {
-    cache: 'force-cache',
-  });
-  const { data: aboutData } = await res.json();
+  await dbConnect();
+  const aboutData = await User.findOne().select(
+    'name email phone address picture bio githubUrl linkedInUrl facebookUrl profession skills website createdAt updatedAt'
+  );
+
+  if (!aboutData) {
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+        <p className='text-lg text-gray-500'>About info not found</p>
+      </div>
+    );
+  }
+
+  const aboutJson = JSON.parse(JSON.stringify(aboutData));
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800'>
       <div className='container mx-auto px-4 py-20'>
@@ -32,22 +46,24 @@ export default async function AboutPage() {
             <div className='relative px-8 pb-8'>
               <div className='flex flex-col md:flex-row items-center md:items-end -mt-20 mb-8'>
                 <div className='relative'>
-                  <Image
-                    src={aboutData?.picture}
-                    alt={aboutData?.name}
-                    width={160}
-                    height={160}
-                    className='w-40 h-40 rounded-full border-8 border-white dark:border-gray-800 shadow-xl object-cover'
-                  />
+                  {aboutJson.picture && (
+                    <Image
+                      src={aboutJson.picture}
+                      alt={aboutJson.name}
+                      width={160}
+                      height={160}
+                      className='w-40 h-40 rounded-full border-8 border-white dark:border-gray-800 shadow-xl object-cover'
+                    />
+                  )}
                   <div className='absolute bottom-4 right-1 bg-green-500 w-8 h-8 rounded-full border-4 border-white dark:border-gray-800'></div>
                 </div>
 
                 <div className='md:ml-8 mt-4 md:mt-0 text-center md:text-left'>
                   <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-2'>
-                    {aboutData?.name}
+                    {aboutJson.name}
                   </h1>
                   <p className='text-xl text-blue-600 dark:text-blue-400 font-semibold mb-2'>
-                    {snakeToProfession(aboutData.profession)}
+                    {snakeToProfession(aboutJson.profession)}
                   </p>
                 </div>
               </div>
@@ -61,7 +77,7 @@ export default async function AboutPage() {
                       Email
                     </p>{' '}
                     <p className='text-gray-900 dark:text-white font-medium'>
-                      {aboutData.email}
+                      {aboutJson.email}
                     </p>
                   </div>
                 </div>
@@ -73,7 +89,7 @@ export default async function AboutPage() {
                       Phone
                     </p>
                     <p className='text-gray-900 dark:text-white font-medium'>
-                      {aboutData?.phone}
+                      {aboutJson.phone}
                     </p>
                   </div>
                 </div>
@@ -85,7 +101,7 @@ export default async function AboutPage() {
                       Location
                     </p>
                     <p className='text-gray-900 dark:text-white font-medium'>
-                      {aboutData?.address}
+                      {aboutJson.address}
                     </p>
                   </div>
                 </div>
@@ -98,13 +114,13 @@ export default async function AboutPage() {
         <div className='max-w-4xl mx-auto mt-12'>
           <div className='bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-8'>
             <div className='flex items-center mb-6'>
-              <User className='w-6 h-6 text-blue-600 dark:text-blue-400 mr-3' />
+              <UserIcon className='w-6 h-6 text-blue-600 dark:text-blue-400 mr-3' />
               <h2 className='text-2xl font-bold text-gray-900 dark:text-white'>
                 About Me
               </h2>
             </div>
             <p className='text-gray-700 dark:text-gray-300 leading-relaxed text-lg'>
-              {aboutData?.bio}
+              {aboutJson.bio}
             </p>
           </div>
         </div>
@@ -116,8 +132,8 @@ export default async function AboutPage() {
               Skills & Technologies
             </h2>
             <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3'>
-              {aboutData.skills.map(
-                (skill: any, index: Key | null | undefined) => (
+              {aboutJson.skills?.map(
+                (skill: string, index: Key | null | undefined) => (
                   <div
                     key={index}
                     className='bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 px-4 py-3 rounded-xl text-center hover:shadow-md transition-all duration-300 hover:scale-105'
@@ -149,10 +165,10 @@ export default async function AboutPage() {
                     </p>
                     <a
                       target='_blank'
-                      href={aboutData.website}
+                      href={aboutJson.website}
                       className='text-blue-600 dark:text-blue-400 hover:underline font-medium'
                     >
-                      {aboutData.website}
+                      {aboutJson.website}
                     </a>
                   </div>
                 </div>
@@ -164,7 +180,7 @@ export default async function AboutPage() {
                       Member Since
                     </p>
                     <p className='text-gray-900 dark:text-white font-medium'>
-                      {new Date(aboutData.createdAt).toLocaleDateString(
+                      {new Date(aboutJson.createdAt).toLocaleDateString(
                         'en-US',
                         {
                           year: 'numeric',
@@ -185,7 +201,7 @@ export default async function AboutPage() {
               <div className='space-y-4'>
                 <a
                   target='_blank'
-                  href={aboutData.githubUrl}
+                  href={aboutJson.githubUrl}
                   className='flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group'
                 >
                   <Github className='w-6 h-6 text-gray-800 dark:text-white mr-4 group-hover:text-blue-600 dark:group-hover:text-blue-400' />
@@ -201,7 +217,7 @@ export default async function AboutPage() {
 
                 <a
                   target='_blank'
-                  href={aboutData.linkedInUrl}
+                  href={aboutJson.linkedInUrl}
                   className='flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group'
                 >
                   <Linkedin className='w-6 h-6 text-blue-600 mr-4 group-hover:text-blue-700' />
@@ -217,7 +233,7 @@ export default async function AboutPage() {
 
                 <a
                   target='_blank'
-                  href={aboutData.facebookUrl}
+                  href={aboutJson.facebookUrl}
                   className='flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105 group'
                 >
                   <Facebook className='w-6 h-6 text-blue-500 mr-4 group-hover:text-blue-600' />
@@ -239,7 +255,7 @@ export default async function AboutPage() {
         <div className='max-w-4xl mx-auto mt-8 text-center'>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Last updated:{' '}
-            {new Date(aboutData.updatedAt).toLocaleDateString('en-US', {
+            {new Date(aboutJson.updatedAt).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -252,17 +268,24 @@ export default async function AboutPage() {
 }
 
 export async function generateMetadata() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/about`, {
-    cache: 'force-cache',
-  });
-  const { data } = await res.json();
-  return {
-    title: data.title,
-    description: data.bio,
-    openGraph: {
-      title: data.title,
-      description: data.bio,
-      images: [data.picture],
+  try {
+    await dbConnect();
+    const data = await User.findOne().select('name bio picture');
+    if (data) {
+      return {
+        title: data.name || 'About',
+        description: data.bio || '',
+        openGraph: {
+          title: data.name || 'About',
+          description: data.bio || '',
+          images: data.picture ? [data.picture] : [],
+        },
+      };
     }
+  } catch (e) {
+    // ignore
+  }
+  return {
+    title: 'About',
   };
 }

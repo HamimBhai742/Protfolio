@@ -1,0 +1,76 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { dbConnect } from '@/lib/db';
+import { Project } from '@/models/Project';
+import { verifyAuth, AuthError } from '@/lib/verifyAuth';
+import { z } from 'zod';
+import httpStatusCode from 'http-status-codes';
+
+const updateProjectSchema = z.object({
+  title: z.string().optional(),
+  thumbnail: z.string().url().optional(),
+  description: z.string().min(200, { message: 'Description must be at least 200 characters' }).optional(),
+  technologies: z.array(z.string()).optional(),
+  features: z.string().optional(),
+  status: z.enum(['completed', 'in_progress', 'planned']).optional(),
+  githubUrl: z.string().url().optional().nullable().or(z.literal('')),
+  liveUrl: z.string().url().optional().nullable().or(z.literal('')),
+  category: z.enum(['web', 'api', 'mobile', 'other']).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional().nullable().or(z.literal('')),
+});
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+    await verifyAuth(request, 'ADMIN');
+
+    const { id } = await params;
+    const numericId = Number(id);
+
+    if (isNaN(numericId)) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid project ID' },
+        { status: httpStatusCode.BAD_REQUEST }
+      );
+    }
+
+    const body = await request.json();
+    const validatedData = await updateProjectSchema.parseAsync(body);
+
+    const updatedProject = await Project.findOneAndUpdate(
+      { id: numericId },
+      validatedData,
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      return NextResponse.json(
+        { success: false, message: 'Project not found' },
+        { status: httpStatusCode.NOT_FOUND }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      statusCode: httpStatusCode.OK,
+      message: 'Project updated successfully',
+      data: updatedProject,
+    });
+  } catch (error: unknown) {
+    console.error('Update project error:', error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, message: 'Validation failed', errors: error.issues },
+        { status: httpStatusCode.BAD_REQUEST }
+      );
+    }
+    const err = error as Error & { status?: number };
+    return NextResponse.json(
+      { success: false, message: err.message || 'Unauthorized Access' },
+      { status: err instanceof AuthError ? err.status : httpStatusCode.UNAUTHORIZED }
+    );
+  }
+}
