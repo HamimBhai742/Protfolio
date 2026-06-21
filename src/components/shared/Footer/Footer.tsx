@@ -11,7 +11,7 @@ const Footer = async () => {
           {/* Brand Section */}
           <div className='lg:col-span-2'>
             <h3 className='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
-              {me.name}
+              {me?.name}
             </h3>
             <p className='text-gray-600 dark:text-gray-300 mb-6 max-w-md'>
               Full-stack developer passionate about creating innovative
@@ -78,7 +78,7 @@ const Footer = async () => {
               </li>
               <li>
                 <Link
-                  href='projects'
+                  href='/projects'
                   className='text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors'
                 >
                   Projects
@@ -110,7 +110,7 @@ const Footer = async () => {
                   <path d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z' />
                   <path d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z' />
                 </svg>
-                {me.email}
+                {me?.email}
               </p>
               <p className='text-gray-600 dark:text-gray-300 flex items-center'>
                 <svg
@@ -124,7 +124,7 @@ const Footer = async () => {
                     clipRule='evenodd'
                   />
                 </svg>
-                {me.address}
+                {me?.address}
               </p>
             </div>
           </div>
@@ -134,7 +134,7 @@ const Footer = async () => {
         <div className='mt-8 pt-8 border-t border-gray-200 dark:border-gray-700'>
           <div className='flex flex-col md:flex-row justify-between items-center'>
             <p className='text-gray-600 dark:text-gray-300 text-sm'>
-              © 2024 {me.name} . All rights reserved.
+              © 2024 {me?.name} . All rights reserved.
             </p>
             <div className='flex space-x-6 mt-4 md:mt-0'>
               <Link

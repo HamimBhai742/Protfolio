@@ -1,23 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/db';
-import { Project } from '@/models/Project';
+import { Timeline } from '@/models/Timeline';
 import { verifyAuth, AuthError } from '@/lib/verifyAuth';
 import { z } from 'zod';
 import httpStatusCode from 'http-status-codes';
 
-const updateProjectSchema = z.object({
-  title: z.string().optional(),
-  thumbnail: z.string().url().optional(),
-  description: z.string().min(200, { message: 'Description must be at least 200 characters' }).optional(),
-  details: z.string().optional(),
-  technologies: z.array(z.string()).optional(),
-  features: z.string().optional(),
-  status: z.enum(['completed', 'in_progress', 'planned']).optional(),
-  githubUrl: z.string().url().optional().nullable().or(z.literal('')),
-  liveUrl: z.string().url().optional().nullable().or(z.literal('')),
-  category: z.enum(['web', 'api', 'mobile', 'other']).optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional().nullable().or(z.literal('')),
+const updateTimelineSchema = z.object({
+  title: z.string().min(2, { message: 'Title must be at least 2 characters.' }).optional(),
+  organization: z.string().min(2, { message: 'Organization must be at least 2 characters.' }).optional(),
+  location: z.string().optional().or(z.literal('')),
+  startDate: z.string().min(2, { message: 'Start date is required.' }).optional(),
+  endDate: z.string().optional().or(z.literal('')),
+  description: z.string().min(10, { message: 'Description must be at least 10 characters.' }).optional(),
+  type: z.enum(['work', 'education']).optional(),
 });
 
 export async function PUT(
@@ -33,23 +28,28 @@ export async function PUT(
 
     if (isNaN(numericId)) {
       return NextResponse.json(
-        { success: false, message: 'Invalid project ID' },
+        { success: false, message: 'Invalid timeline ID' },
         { status: httpStatusCode.BAD_REQUEST }
       );
     }
 
     const body = await request.json();
-    const validatedData = await updateProjectSchema.parseAsync(body);
+    const validatedData = await updateTimelineSchema.parseAsync(body);
 
-    const updatedProject = await Project.findOneAndUpdate(
+    const updatePayload: Record<string, unknown> = { ...validatedData };
+    if (validatedData.endDate === '') {
+      updatePayload.endDate = 'Present';
+    }
+
+    const updatedTimeline = await Timeline.findOneAndUpdate(
       { id: numericId },
-      validatedData,
-      { new: true }
+      { $set: updatePayload },
+      { returnDocument: 'after' }
     );
 
-    if (!updatedProject) {
+    if (!updatedTimeline) {
       return NextResponse.json(
-        { success: false, message: 'Project not found' },
+        { success: false, message: 'Timeline entry not found' },
         { status: httpStatusCode.NOT_FOUND }
       );
     }
@@ -57,11 +57,11 @@ export async function PUT(
     return NextResponse.json({
       success: true,
       statusCode: httpStatusCode.OK,
-      message: 'Project updated successfully',
-      data: updatedProject,
+      message: 'Timeline entry updated successfully',
+      data: updatedTimeline,
     });
   } catch (error: unknown) {
-    console.error('Update project error:', error);
+    console.error('Update timeline entry error:', error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: 'Validation failed', errors: error.issues },

@@ -27,6 +27,7 @@ export default function UpdateProjectForm({
     thumbnail: null as File | null,
     description: '',
     features: '',
+    details: '',
     technologies: [''],
     liveUrl: '',
     githubUrl: '',
@@ -138,6 +139,24 @@ export default function UpdateProjectForm({
               }
               className='w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none'
               placeholder='Explain your project features'
+            />
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+              Full Project Details
+            </label>
+            <textarea
+              rows={6}
+              defaultValue={project.details}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  details: e.target.value,
+                }))
+              }
+              className='w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none'
+              placeholder='Describe the full details of your project, architecture, outcomes, etc.'
             />
           </div>
 

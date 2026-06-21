@@ -13,6 +13,8 @@ import {
   LogOut,
   ChevronRight,
   Book,
+  Calendar,
+  Mail,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/toggle/ThemeToggleBtn';
 import { getMe } from '@/helpers/getMe';
@@ -22,13 +24,16 @@ const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'Profile', href: '/dashboard/profile', icon: User },
   { name: 'My Projects', href: '/dashboard/my-projects', icon: FolderOpen },
+  { name: 'Manage Timeline', href: '/dashboard/timeline', icon: Calendar },
   { name: 'Create Blog', href: '/dashboard/create-blog', icon: BookOpen },
   { name: 'My Blogs', href: '/dashboard/my-blogs', icon: Book },
+  { name: 'Inquiries', href: '/dashboard/inquiries', icon: Mail },
 ];
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [owner, setOwner] = useState({ name: '', picture: '', role: 'ADMIN' });
+  const [unreadCount, setUnreadCount] = useState(0);
   const pathname = usePathname();
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -39,6 +44,21 @@ export default function Sidebar() {
     };
     owner();
   }, [setOwner]);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch('/api/v2/messages?filter=unread');
+        const data = await res.json();
+        if (data?.success) {
+          setUnreadCount(data.data.length);
+        }
+      } catch (err) {
+        console.error('Failed to fetch unread messages count:', err);
+      }
+    };
+    fetchUnreadCount();
+  }, []);
 
   return (
     <>
@@ -133,6 +153,11 @@ export default function Sidebar() {
                   }`}
                 />
                 <span className='font-medium'>{item.name}</span>
+                {item.name === 'Inquiries' && unreadCount > 0 && (
+                  <span className='ml-2 bg-blue-600 dark:bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full'>
+                    {unreadCount}
+                  </span>
+                )}
                 {isActive ? (
                   <div className='ml-auto w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full' />
                 ) : (

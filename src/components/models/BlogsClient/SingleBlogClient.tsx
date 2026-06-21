@@ -14,6 +14,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   const formatDate = (date: string) => {
+    if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -25,8 +26,8 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: blog.title,
-          text: blog.description,
+          title: blog?.title || 'Blog Post',
+          text: blog?.description || '',
           url: window.location.href,
         });
       } catch (error) {
@@ -41,61 +42,69 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
-    // Here you would typically save to localStorage or send to API
   };
+
+  const blogTags = blog?.tags || [];
+  const categoryName = blog?.category ? blog.category.replace('_', ' ') : '';
+  const contentBody = blog?.content || '';
 
   return (
     <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
       {/* Article */}
       <article className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:pt-20'>
+        
         {/* Hero Image */}
-        <div className='relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8'>
-          <Image
-            src={blog.thumbnail}
-            alt={blog.title}
-            fill
-            className='object-cover'
-            priority
-          />
+        <div className='relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8 bg-gradient-to-br from-blue-400/20 to-purple-500/20 border border-gray-200 dark:border-gray-800'>
+          {blog?.thumbnail && (
+            <Image
+              src={blog.thumbnail}
+              alt={blog?.title || 'Blog Banner'}
+              fill
+              className='object-cover'
+              priority
+            />
+          )}
           <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent' />
         </div>
 
         {/* Article Header */}
         <header className='mb-8'>
           {/* Meta Info */}
-          <div className='flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4'>
-            <div className='flex items-center gap-1'>
-              <Calendar className='w-4 h-4' />
-              <span>{formatDate(blog.createdAt)}</span>
+          <div className='flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4 font-semibold'>
+            <div className='flex items-center gap-1.5'>
+              <Calendar className='w-4 h-4 text-gray-400' />
+              <span>{formatDate(blog?.createdAt)}</span>
             </div>
-            <div className='flex items-center gap-1'>
-              <Eye className='w-4 h-4' />
-              <span>{blog.views}</span>
+            <div className='flex items-center gap-1.5'>
+              <Eye className='w-4 h-4 text-gray-400' />
+              <span>{blog?.views || 0}</span>
             </div>
-            <div className='flex items-center gap-1'>
-              <Tag className='w-4 h-4' />
-              <span>{blog.category.replace('_', ' ')}</span>
-            </div>
+            {categoryName && (
+              <div className='flex items-center gap-1.5'>
+                <Tag className='w-4 h-4 text-gray-400' />
+                <span className='capitalize'>{categoryName}</span>
+              </div>
+            )}
           </div>
 
           {/* Title */}
           <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight'>
-            {blog.title}
+            {blog?.title}
           </h1>
 
           {/* Description */}
-          <p className='text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6 leading-relaxed'>
-            {blog.description}
+          <p className='text-lg md:text-xl text-gray-650 dark:text-gray-300 mb-6 leading-relaxed'>
+            {blog?.description}
           </p>
 
           {/* Actions */}
-          <div className='flex items-center justify-between'>
+          <div className='flex flex-wrap items-center justify-between gap-4'>
             {/* Tags */}
             <div className='flex flex-wrap gap-2'>
-              {blog.tags.map((tag, index) => (
+              {blogTags.map((tag, index) => (
                 <span
                   key={index}
-                  className='px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full'
+                  className='px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm rounded-full'
                 >
                   #{tag}
                 </span>
@@ -139,7 +148,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
                 lineHeight: '1.75',
               }}
             >
-              {blog.content.split('\n').map((paragraph, index) => {
+              {contentBody.split('\n').map((paragraph, index) => {
                 // Handle headers
                 if (paragraph.startsWith('# ')) {
                   return (
@@ -174,7 +183,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
 
                 // Handle code blocks
                 if (paragraph.startsWith('```')) {
-                  return null; // Handle in a more sophisticated way if needed
+                  return null;
                 }
 
                 // Handle lists
@@ -182,7 +191,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
                   return (
                     <li
                       key={index}
-                      className='text-gray-700 dark:text-gray-300 mb-2'
+                      className='text-gray-700 dark:text-gray-305 mb-2 list-none pl-3 border-l-2 border-blue-500'
                     >
                       {paragraph.replace('- ', '')}
                     </li>
@@ -198,7 +207,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
                 // Handle inline code
                 const codeText = boldText.replace(
                   /`(.*?)`/g,
-                  '<code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">$1</code>'
+                  '<code class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">$1</code>'
                 );
 
                 // Regular paragraphs
@@ -221,14 +230,14 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
         {/* Article Footer */}
         <footer className='mt-12 pt-8 border-t border-gray-200 dark:border-gray-700'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-            <div className='text-sm text-gray-500 dark:text-gray-400'>
-              Last updated: {formatDate(blog.updatedAt)}
+            <div className='text-sm text-gray-500 dark:text-gray-400 font-semibold'>
+              Last updated: {formatDate(blog?.updatedAt)}
             </div>
 
             <div className='flex items-center gap-4'>
               <button
                 onClick={handleShare}
-                className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors'
+                className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm hover:cursor-pointer'
               >
                 <Share2 className='w-4 h-4' />
                 Share Article
@@ -236,7 +245,7 @@ export const SingleBlogClient = ({ blog }: SingleBlogClientProps) => {
 
               <Link
                 href='/blog'
-                className='inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors'
+                className='inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors font-bold text-sm'
               >
                 More Articles
               </Link>

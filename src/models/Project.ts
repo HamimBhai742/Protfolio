@@ -6,6 +6,7 @@ export interface IProject extends Document {
   title: string;
   thumbnail: string;
   description: string;
+  details?: string;
   features: string;
   category: 'web' | 'api' | 'mobile' | 'other';
   githubUrl?: string;
@@ -25,6 +26,7 @@ const ProjectSchema = new Schema<IProject>(
     title: { type: String, required: true },
     thumbnail: { type: String, required: true },
     description: { type: String, required: true },
+    details: { type: String },
     features: { type: String, required: true },
     category: {
       type: String,

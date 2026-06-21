@@ -23,6 +23,7 @@ export default function AddProjectForm({
     userId: 1,
     title: '',
     description: '',
+    details: '',
     technologies: [''],
     liveUrl: '',
     githubUrl: '',
@@ -145,6 +146,27 @@ export default function AddProjectForm({
             />
             <span className='text-xs absolute right-2 bottom-3 ml-4 text-gray-600 dark:text-gray-400 block '>
               {formData?.features?.length || 0}
+            </span>
+          </div>
+
+          <div className='relative'>
+            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+              Full Project Details
+            </label>
+            <textarea
+              rows={6}
+              value={formData.details}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  details: e.target.value,
+                }))
+              }
+              className='w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none'
+              placeholder='Describe the full details of your project, architecture, outcomes, etc.'
+            />
+            <span className='text-xs absolute right-2 bottom-3 ml-4 text-gray-600 dark:text-gray-400 block '>
+              {formData?.details?.length || 0}
             </span>
           </div>
 

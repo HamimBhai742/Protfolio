@@ -16,6 +16,8 @@ export interface DashboardStats {
   totalCompltedProjects: number;
   totalInProgressProjects: number;
   totalPlannedProjects: number;
+  totalMessages?: number;
+  unreadMessages?: number;
 }
 
 export interface StatCard {

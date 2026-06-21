@@ -3,6 +3,7 @@ import QuickActions from '@/components/models/Dashboard/QuickActions';
 import { dbConnect } from '@/lib/db';
 import { Blog } from '@/models/Blog';
 import { Project } from '@/models/Project';
+import { Message } from '@/models/Message';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,6 +67,10 @@ export default async function Dashboard() {
   const totalPublishedBlogs = await Blog.countDocuments({ status: 'published' });
   const totalDraftBlogs = await Blog.countDocuments({ status: 'draft' });
 
+  // Fetch Message statistics
+  const totalMessages = await Message.countDocuments({});
+  const unreadMessages = await Message.countDocuments({ isRead: false });
+
   const stats = {
     totalBlogs: blogStat.totalBlogs,
     totalPublishedBlogs,
@@ -85,6 +90,8 @@ export default async function Dashboard() {
     totalCompltedProjects: totalCompletedProjects,
     totalInProgressProjects,
     totalPlannedProjects,
+    totalMessages,
+    unreadMessages,
   };
 
   return (

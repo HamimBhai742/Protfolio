@@ -2,7 +2,7 @@
 import { DashboardStats } from '@/types/dashboard.types';
 import StatsCard from './StatsCard';
 import ActivityChart from './ActivityChart';
-import { Eye, FileText, FolderOpen, Sparkles } from 'lucide-react';
+import { Eye, FileText, FolderOpen, Sparkles, Mail } from 'lucide-react';
 interface DashboardOverviewProps {
   stats: DashboardStats;
 }
@@ -108,6 +108,21 @@ export default function DashboardOverview({ stats }: DashboardOverviewProps) {
     },
   ];
 
+  const messageStats = [
+    {
+      title: 'Total Messages',
+      value: stats.totalMessages ?? 0,
+      icon: 'Mail',
+      color: 'bg-teal-500',
+    },
+    {
+      title: 'Unread Messages',
+      value: stats.unreadMessages ?? 0,
+      icon: 'MessageSquare',
+      color: 'bg-red-500',
+    },
+  ];
+
 
 
   return (
@@ -186,6 +201,23 @@ export default function DashboardOverview({ stats }: DashboardOverviewProps) {
         </div>
         <div className='grid grid-cols-2 lg:grid-cols-3 gap-6'>
           {projectStats.map((stat, index) => (
+            <StatsCard key={index} stat={stat} />
+          ))}
+        </div>
+      </div>
+
+      {/* Message Statistics */}
+      <div className='space-y-6'>
+        <div className='flex items-center space-x-3'>
+          <div className='p-3 bg-gradient-to-r from-teal-500 to-teal-650 rounded-2xl shadow-lg'>
+            <Mail className='w-6 h-6 text-white' />
+          </div>
+          <h2 className='sm:text-3xl text-2xl font-bold text-gray-900 dark:text-white'>
+            Message Analytics
+          </h2>
+        </div>
+        <div className='grid grid-cols-2 lg:grid-cols-2 gap-6'>
+          {messageStats.map((stat, index) => (
             <StatsCard key={index} stat={stat} />
           ))}
         </div>

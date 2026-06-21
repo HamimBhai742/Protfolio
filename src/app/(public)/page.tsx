@@ -2,6 +2,7 @@ import Herosection from '@/components/models/Home/Herosection';
 import AboutSection from '@/components/models/Home/AboutSection';
 import ProjectSection from '@/components/models/Home/ProjectSection';
 import BlogsSection from '@/components/models/Home/BlogsSection';
+import ContactSection from '@/components/models/Home/ContactSection';
 import { dbConnect } from '@/lib/db';
 import { User } from '@/models/User';
 import { Blog } from '@/models/Blog';
@@ -20,7 +21,7 @@ export default async function Home() {
 
   // Query User details
   const user = await User.findOne().select(
-    'id name email address picture profession experience skills bio role githubUrl facebookUrl linkedInUrl website createdAt updatedAt'
+    'id name email phone address picture profession experience skills bio role githubUrl facebookUrl linkedInUrl website createdAt updatedAt'
   );
 
   // Query Blogs
@@ -42,6 +43,13 @@ export default async function Home() {
 
       {/* Latest Blog Posts Section */}
       <BlogsSection blogs={JSON.parse(JSON.stringify(blogs.slice(0, 3)))} />
+
+      {/* Contact Section */}
+      <ContactSection 
+        email={user?.email} 
+        phone={user?.phone} 
+        address={user?.address} 
+      />
     </div>
   );
 }

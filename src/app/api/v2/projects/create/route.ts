@@ -9,6 +9,7 @@ const createProjectSchema = z.object({
   title: z.string(),
   thumbnail: z.string().url(),
   description: z.string().min(200, { message: 'Description must be at least 200 characters' }),
+  details: z.string().optional(),
   features: z.string(),
   technologies: z.array(z.string()),
   status: z.enum(['completed', 'in_progress', 'planned']),

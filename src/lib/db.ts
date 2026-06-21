@@ -1,13 +1,6 @@
 import mongoose from 'mongoose';
 import dns from 'dns';
 
-// Set DNS servers to Google DNS to avoid querySrv resolution failures in Node on Windows
-try {
-  dns.setServers(['8.8.8.8', '8.8.4.4']);
-} catch (e) {
-  console.warn('Could not set public DNS servers:', e);
-}
-
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -47,7 +40,37 @@ export async function dbConnect() {
     console.log('[DB] Active DNS servers:', dns.getServers());
     console.log('[DB] URI:', MONGODB_URI);
 
-    cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongooseInstance) => {
+    const connectWithRetry = async (retries = 3, delay = 1000): Promise<typeof mongoose> => {
+      try {
+        return await mongoose.connect(MONGODB_URI as string, opts);
+      } catch (err) {
+        const error = err as Error & { code?: string; syscall?: string };
+        console.error(`[DB] Connection failed (attempts left: ${retries}):`, error.message);
+        
+        if (retries === 1) {
+          throw err;
+        }
+
+        // If it looks like a DNS issue, try setting public DNS servers
+        if (
+          error.code === 'ECONNREFUSED' || 
+          error.code === 'ENOTFOUND' || 
+          error.syscall === 'querySrv'
+        ) {
+          console.log('[DB] DNS resolution issue detected. Switching resolver to public DNS...');
+          try {
+            dns.setServers(['8.8.8.8', '1.1.1.1']);
+          } catch (e) {
+            console.warn('[DB] Could not set public DNS servers:', e);
+          }
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        return connectWithRetry(retries - 1, delay * 2);
+      }
+    };
+
+    cached.promise = connectWithRetry().then((mongooseInstance) => {
       console.log('MongoDB connected successfully');
       return mongooseInstance;
     }).catch((err) => {

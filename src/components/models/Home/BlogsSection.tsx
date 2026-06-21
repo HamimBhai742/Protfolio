@@ -16,7 +16,7 @@ export default function BlogsSection({ blogs }: { blogs: BlogPost[] }) {
           </p>
         </div>
         <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12'>
-          {blogs.map((blog: BlogPost) => (
+          {(blogs || []).map((blog: BlogPost) => (
             <BlogCard blog={blog} key={blog.id} />
           ))}
         </div>
