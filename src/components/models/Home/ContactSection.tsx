@@ -103,7 +103,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
                   <div>
                     <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Location</p>
                     <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
-                      {address || 'Dhaka, Bangladesh'}
+                      {address || 'House 24, Road 08, Rampura, Banasree, Dhaka 1219'}
                     </p>
                   </div>
                 </div>
