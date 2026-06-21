@@ -3,6 +3,7 @@ import { dbConnect } from '@/lib/db';
 import { Message } from '@/models/Message';
 import { z } from 'zod';
 import httpStatusCode from 'http-status-codes';
+import { sendContactEmail, sendAutoReplyEmail } from '@/lib/mailer';
 
 const createMessageSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -26,6 +27,24 @@ export async function POST(request: NextRequest) {
       id: newId,
       isRead: false,
     });
+
+    // Send notification and auto-reply emails asynchronously (non-blocking for response)
+    try {
+      await Promise.all([
+        sendContactEmail({
+          name: validatedData.name,
+          email: validatedData.email,
+          subject: validatedData.subject,
+          message: validatedData.message,
+        }),
+        sendAutoReplyEmail({
+          name: validatedData.name,
+          email: validatedData.email,
+        }),
+      ]);
+    } catch (mailError) {
+      console.error('[API] Failed to dispatch email notifications:', mailError);
+    }
 
     return NextResponse.json({
       success: true,

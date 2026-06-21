@@ -52,7 +52,7 @@ export default function AboutSection({ user }: { user: User }) {
           </span>
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white mb-4">
             About{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-fuchsia-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
               Me
             </span>
           </h2>
@@ -112,7 +112,7 @@ export default function AboutSection({ user }: { user: User }) {
             {/* CTA */}
             <Link
               href="/about"
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200"
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200"
             >
               View Full Profile
               <svg
@@ -144,7 +144,7 @@ export default function AboutSection({ user }: { user: User }) {
               <StatCard
                 value={`${user?.skills?.length ?? 0}+`}
                 label="Skills Mastered"
-                accent="bg-fuchsia-500 text-fuchsia-600 dark:text-fuchsia-400"
+                accent="bg-indigo-500 text-indigo-600 dark:text-indigo-400"
               />
               <StatCard
                 value="100%"
@@ -182,3 +182,4 @@ export default function AboutSection({ user }: { user: User }) {
     </section>
   );
 }
+

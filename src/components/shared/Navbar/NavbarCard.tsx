@@ -67,7 +67,7 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
     <div
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'py-3 bg-white/10 dark:bg-gray-950/10' 
+          ? 'py-3 bg-white/5 dark:bg-[oklch(0.10_0.025_264)]/5' 
           : 'py-5 bg-transparent'
       }`}
     >
@@ -75,38 +75,38 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
         <div
           className={`px-6 h-18 rounded-2xl flex items-center justify-between transition-all duration-500 ${
             isScrolled
-              ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.25)] border border-gray-200/40 dark:border-gray-800/40'
+              ? 'bg-white/85 dark:bg-[oklch(0.14_0.025_264)]/90 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/30 border border-slate-200/60 dark:border-white/8'
               : 'bg-transparent border border-transparent'
           }`}
         >
           {/* Logo/Brand */}
           <Link href='/' className='flex items-center space-x-3 group'>
-            <div className='relative w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/10 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition-all duration-300 overflow-hidden'>
-              <div className='absolute inset-0 bg-gradient-to-r from-white/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+            <div className='relative w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300 overflow-hidden'>
+              <div className='absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
               <span className='text-white font-extrabold text-lg tracking-wider group-hover:scale-110 transition-transform duration-300'>
                 {me?.name?.charAt(0).toUpperCase() || 'H'}
               </span>
             </div>
-            <span className='text-xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-200 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:dark:from-blue-400 group-hover:dark:to-indigo-400 transition-all duration-300'>
+            <span className='text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300'>
               {me?.name || 'Hamim'}
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex items-center space-x-1 bg-gray-105/40 dark:bg-gray-900/20 p-1.5 rounded-full border border-gray-200/10 dark:border-gray-800/10'>
+          <div className='hidden md:flex items-center space-x-1 bg-slate-100/60 dark:bg-white/5 p-1.5 rounded-full border border-slate-200/50 dark:border-white/8'>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-all duration-300 group ${
                   isActive(link.href)
-                    ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md shadow-blue-500/15 scale-102 animate-glow-pulse'
-                    : 'text-gray-650 dark:text-gray-350 hover:text-blue-600 dark:hover:text-blue-400'
+                    ? 'text-white bg-indigo-600 shadow-md shadow-indigo-500/20 animate-glow-pulse'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400'
                 }`}
               >
                 <span className='relative z-10'>{link.label}</span>
                 {!isActive(link.href) && (
-                  <span className='absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-1/2 rounded-full' />
+                  <span className='absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-indigo-500 transition-all duration-300 group-hover:w-1/2 rounded-full' />
                 )}
               </Link>
             ))}
@@ -121,9 +121,9 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
             {/* Contact Me Button */}
             <Link
               href='/#contact'
-              className='relative group overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white px-5 py-2.5 rounded-full font-bold shadow-md shadow-blue-500/10 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2'
+              className='relative group overflow-hidden bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full font-bold shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2'
             >
-              <span className='absolute inset-0 w-full h-full bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out' />
+              <span className='absolute inset-0 w-full h-full bg-white/10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out' />
               <span className='relative z-10 text-sm'>Contact Me</span>
               <Send className='w-3.5 h-3.5 relative z-10 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5' />
             </Link>
@@ -146,7 +146,7 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
 
                 <MenuItems
                   transition
-                  className='absolute right-0 z-50 mt-3 w-56 origin-top-right rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl py-2 shadow-[0_10px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-gray-100 dark:border-gray-800/80 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in focus:outline-none'
+                  className='absolute right-0 z-50 mt-3 w-56 origin-top-right rounded-2xl bg-white dark:bg-[oklch(0.14_0.025_264)] backdrop-blur-xl py-2 shadow-xl shadow-black/10 dark:shadow-black/40 border border-slate-200/60 dark:border-white/8 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in focus:outline-none'
                 >
                   <div className='px-4 py-2.5 border-b border-gray-100 dark:border-gray-850 mb-1.5'>
                     <p className='text-[10px] text-gray-400 font-bold uppercase tracking-wider'>Logged in as</p>
@@ -207,8 +207,8 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
                 onClick={() => setIsOpen(false)}
                 className={`block mx-3 px-4 py-2.5 text-base font-semibold rounded-xl transition-all duration-300 ${
                   isActive(link.href)
-                    ? 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md shadow-blue-500/15'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/60 dark:hover:bg-gray-800/60'
+                    ? 'text-white bg-indigo-600 shadow-md shadow-indigo-500/20'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-white/5'
                 }`}
               >
                 {link.label}
@@ -259,7 +259,7 @@ const NavbarCard = ({ me }: { me: { name: string; picture: string; email?: strin
               <Link
                 href='/#contact'
                 onClick={() => setIsOpen(false)}
-                className='flex items-center justify-center gap-2 w-full text-center px-6 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-xl shadow-md shadow-blue-500/10 active:scale-98 transition-transform'
+                className='flex items-center justify-center gap-2 w-full text-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md shadow-indigo-500/20 active:scale-98 transition-all'
               >
                 <span>Contact Me</span>
                 <Send className='w-4 h-4' />

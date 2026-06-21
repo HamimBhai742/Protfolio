@@ -17,7 +17,7 @@ function BackgroundOrbs() {
         className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 dark:opacity-10"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.65 0.22 264) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.511 0.241 264) 0%, transparent 70%)',
           animation: 'orb-drift-1 12s ease-in-out infinite',
         }}
       />
@@ -26,7 +26,7 @@ function BackgroundOrbs() {
         className="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full opacity-15 dark:opacity-10"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.65 0.25 310) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.459 0.25 280) 0%, transparent 70%)',
           animation: 'orb-drift-2 16s ease-in-out infinite',
         }}
       />
@@ -35,7 +35,7 @@ function BackgroundOrbs() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full opacity-5 dark:opacity-5"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.75 0.18 180) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.585 0.213 264) 0%, transparent 70%)',
           animation: 'orb-drift-3 20s ease-in-out infinite',
         }}
       />
@@ -71,7 +71,7 @@ function StatBadge({
       className="flex flex-col items-center px-5 py-3 rounded-2xl border border-white/20 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-md shadow-sm"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent leading-none">
+      <span className="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent leading-none">
         {value}
       </span>
       <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium tracking-wide uppercase">
@@ -219,7 +219,7 @@ export default function Herosection({ user }: { user: User }) {
               <span className="text-gray-800 dark:text-white">Hi, I&apos;m</span>
               <br />
               <span
-                className="bg-gradient-to-r from-blue-600 via-violet-600 to-fuchsia-500 bg-clip-text text-transparent"
+                className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent"
                 style={{ WebkitBackgroundClip: 'text' }}
               >
                 <Typewriter
@@ -264,7 +264,7 @@ export default function Herosection({ user }: { user: User }) {
             >
               <Link
                 href="/projects"
-                className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 overflow-hidden"
+                className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   {/* Arrow icon */}
@@ -337,7 +337,7 @@ export default function Herosection({ user }: { user: User }) {
               className="absolute w-72 h-72 rounded-full opacity-20 dark:opacity-15 blur-3xl -z-10"
               style={{
                 background:
-                  'radial-gradient(circle, oklch(0.65 0.22 264) 0%, oklch(0.65 0.25 310) 100%)',
+                  'radial-gradient(circle, oklch(0.511 0.241 264) 0%, oklch(0.459 0.25 280) 100%)',
               }}
             />
 
@@ -403,3 +403,4 @@ export default function Herosection({ user }: { user: User }) {
     </>
   );
 }
+

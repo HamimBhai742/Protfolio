@@ -86,7 +86,7 @@ export default async function AboutPage() {
         ══════════════════════════════════════════ */}
         <div className="relative overflow-hidden">
           {/* Gradient base */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-violet-600 to-fuchsia-600" />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-indigo-500" />
           {/* Orbs */}
           <div
             className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-white/10 blur-3xl"
@@ -235,7 +235,7 @@ export default async function AboutPage() {
             </div>
             {/* Large decorative quote */}
             <div className="relative">
-              <span className="absolute -top-4 -left-2 text-7xl text-blue-100 dark:text-blue-900/40 font-serif select-none leading-none">"</span>
+              <span className="absolute -top-4 -left-2 text-7xl text-blue-100 dark:text-blue-900/40 font-serif select-none leading-none">&quot;</span>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base pl-4">
                 {u?.bio || 'No bio provided yet.'}
               </p>
@@ -248,7 +248,7 @@ export default async function AboutPage() {
             style={{ animationDelay: '0.15s' }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-900/30">
+              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-violet-100 dark:border-violet-900/30">
                 <Sparkles className="w-5 h-5" />
               </div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -319,7 +319,7 @@ export default async function AboutPage() {
               {/* Education */}
               <div>
                 <div className="flex items-center gap-2.5 mb-6">
-                  <div className="p-2 rounded-xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-900/30">
+                  <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-violet-100 dark:border-violet-900/30">
                     <GraduationCap className="w-4 h-4" />
                   </div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white">Education</h3>
@@ -336,7 +336,7 @@ export default async function AboutPage() {
                       <div key={item?.id} className="relative pl-5 group">
                         <div className="absolute -left-[25px] top-1 w-3 h-3 rounded-full bg-white dark:bg-gray-900 border-2 border-violet-500 group-hover:scale-150 group-hover:bg-violet-500 transition-all duration-300" />
                         <div className="p-4 rounded-2xl border border-gray-100 dark:border-white/8 bg-gray-50 dark:bg-white/3 hover:border-violet-200 dark:hover:border-violet-800/50 hover:bg-violet-50/50 dark:hover:bg-violet-950/20 transition-all duration-200">
-                          <span className="inline-block text-[10px] font-bold text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-950/50 px-2.5 py-0.5 rounded-full mb-2 tracking-wide">
+                          <span className="inline-block text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-violet-100 dark:bg-violet-950/50 px-2.5 py-0.5 rounded-full mb-2 tracking-wide">
                             {item?.startDate} – {item?.endDate || 'Present'}
                           </span>
                           <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-0.5 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
@@ -385,7 +385,7 @@ export default async function AboutPage() {
                         })
                       : '—',
                     href: undefined,
-                    color: 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400',
+                    color: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400',
                   },
                 ].map((item) => (
                   <div
@@ -519,3 +519,4 @@ export async function generateMetadata() {
   }
   return { title: 'About' };
 }
+

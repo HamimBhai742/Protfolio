@@ -13,7 +13,11 @@ export async function POST(request: NextRequest) {
       data: decodedUser,
     });
   } catch (error: unknown) {
-    console.error('Verify error:', error);
+    if (error instanceof AuthError) {
+      console.log(`[Auth] Verification failed: ${error.message} (Status: ${error.status})`);
+    } else {
+      console.error('[Auth] Verification unexpected error:', error);
+    }
     const err = error as Error & { status?: number };
     return NextResponse.json(
       { success: false, message: err.message || 'Unauthorized Access' },

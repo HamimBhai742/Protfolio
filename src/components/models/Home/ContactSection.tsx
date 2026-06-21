@@ -46,7 +46,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
   };
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-tr from-indigo-50/50 via-slate-50 to-blue-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 border-t border-gray-200/50 dark:border-gray-800/50">
+    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-tr from-slate-50 via-slate-50 to-indigo-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 border-t border-gray-200/50 dark:border-gray-800/50">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center space-y-4 mb-16">
@@ -55,7 +55,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
             <span>Get In Touch</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-black text-gray-950 dark:text-white tracking-tight">
-            Let&apos;s Start A <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Conversation</span>
+            Let&apos;s Start A <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent">Conversation</span>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Have a project in mind, want to collaborate, or just want to say hello? Drop me a message and I&apos;ll get back to you as soon as possible.
@@ -97,7 +97,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center border border-purple-100/50 dark:border-purple-800/30 text-purple-600 dark:text-purple-400 shrink-0">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center border border-indigo-100/50 dark:border-indigo-800/30 text-indigo-600 dark:text-indigo-400 shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
@@ -177,7 +177,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2.5 px-6 py-4 bg-gradient-to-r from-blue-650 via-indigo-600 to-purple-655 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/10 hover:shadow-xl hover:shadow-indigo-500/20 active:scale-98 transition-all hover:cursor-pointer disabled:opacity-70 disabled:pointer-events-none"
+                className="w-full flex items-center justify-center gap-2.5 px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/10 hover:shadow-xl hover:shadow-indigo-500/20 active:scale-98 transition-all hover:cursor-pointer disabled:opacity-70 disabled:pointer-events-none"
               >
                 {loading ? (
                   <>
@@ -198,3 +198,4 @@ export default function ContactSection({ email, phone, address }: { email?: stri
     </section>
   );
 }
+

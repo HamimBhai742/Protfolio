@@ -9,7 +9,7 @@ export default function ProjectSection({ projects }: { projects: Project[] }) {
   const statusColors = {
     completed: 'bg-green-600 dark:bg-green-500 text-white',
     in_progress: 'bg-yellow-600 dark:bg-yellow-500 text-white',
-    planned: 'bg-blue-600 dark:bg-blue-500 text-white',
+    planned: 'bg-indigo-600 dark:bg-indigo-500 text-white',
   };
 
   const formatDate = (dateString: string) => {
@@ -29,7 +29,7 @@ export default function ProjectSection({ projects }: { projects: Project[] }) {
           <h2 className='text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight'>
             Latest Projects
           </h2>
-          <div className='w-16 h-1 bg-blue-600 dark:bg-blue-500 mx-auto rounded-full' />
+          <div className='w-16 h-1 bg-indigo-600 dark:bg-indigo-500 mx-auto rounded-full' />
           <p className='text-lg text-gray-650 dark:text-gray-400 max-w-xl mx-auto pt-1'>
             Explore some of my recent work, showcase projects, and open-source contributions
           </p>
@@ -52,7 +52,7 @@ export default function ProjectSection({ projects }: { projects: Project[] }) {
                 className='group relative bg-white dark:bg-gray-900 rounded-3xl border border-gray-200/50 dark:border-gray-800/80 shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden flex flex-col h-full'
               >
                 {/* Thumbnail Header */}
-                <div className='relative h-52 w-full overflow-hidden bg-gradient-to-br from-blue-400/20 to-purple-500/20 shrink-0 border-b border-gray-100 dark:border-gray-800/50'>
+                <div className='relative h-52 w-full overflow-hidden bg-gradient-to-br from-indigo-400/15 to-indigo-600/10 shrink-0 border-b border-gray-100 dark:border-gray-800/50'>
                   {project?.thumbnail && (
                     <Image
                       src={project.thumbnail}
@@ -177,7 +177,7 @@ export default function ProjectSection({ projects }: { projects: Project[] }) {
         <div className='text-center'>
           <Link
             href='/projects'
-            className='inline-flex items-center justify-center bg-blue-600 hover:bg-blue-750 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-bold text-sm hover:cursor-pointer'
+            className='inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-bold text-sm hover:cursor-pointer'
           >
             View All Projects
           </Link>
@@ -186,3 +186,4 @@ export default function ProjectSection({ projects }: { projects: Project[] }) {
     </section>
   );
 }
+
