@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Loader2, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ScrollReveal from '@/components/shared/ScrollReveal';
 
 export default function ContactSection({ email, phone, address }: { email?: string; phone?: string; address?: string }) {
   const [formData, setFormData] = useState({
@@ -49,22 +50,24 @@ export default function ContactSection({ email, phone, address }: { email?: stri
     <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-tr from-slate-50 via-slate-50 to-indigo-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 border-t border-gray-200/50 dark:border-gray-800/50">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
-        <div className="text-center space-y-4 mb-16">
-          <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-blue-100 dark:border-blue-900/50">
-            <MessageSquare className="w-4 h-4" />
-            <span>Get In Touch</span>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="text-center space-y-4 mb-16">
+            <div className="inline-flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-blue-100 dark:border-blue-900/50">
+              <MessageSquare className="w-4 h-4" />
+              <span>Get In Touch</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl font-black text-gray-950 dark:text-white tracking-tight">
+              Let&apos;s Start A <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent">Conversation</span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Have a project in mind, want to collaborate, or just want to say hello? Drop me a message and I&apos;ll get back to you as soon as possible.
+            </p>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-950 dark:text-white tracking-tight">
-            Let&apos;s Start A <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-400 dark:to-indigo-300 bg-clip-text text-transparent">Conversation</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind, want to collaborate, or just want to say hello? Drop me a message and I&apos;ll get back to you as soon as possible.
-          </p>
-        </div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
           {/* Contact details */}
-          <div className="lg:col-span-5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-8 rounded-3xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl flex flex-col justify-between space-y-8">
+          <ScrollReveal direction="left" delay={200} className="lg:col-span-5 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl p-8 rounded-3xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl flex flex-col justify-between space-y-8">
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Information</h3>
               <p className="text-gray-600 dark:text-gray-400">
@@ -116,10 +119,10 @@ export default function ContactSection({ email, phone, address }: { email?: stri
                 Typically responds within 24 hours.
               </p>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Form */}
-          <div className="lg:col-span-7 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800/50">
+          <ScrollReveal direction="right" delay={300} className="lg:col-span-7 bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800/50">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -192,7 +195,7 @@ export default function ContactSection({ email, phone, address }: { email?: stri
                 )}
               </button>
             </form>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

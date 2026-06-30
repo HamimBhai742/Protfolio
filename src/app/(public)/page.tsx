@@ -7,6 +7,7 @@ import { dbConnect } from '@/lib/db';
 import { User } from '@/models/User';
 import { Blog } from '@/models/Blog';
 import { Project } from '@/models/Project';
+import IntroLoader from '@/components/models/Home/IntroLoader';
 
 export const metadata = {
   title: 'Hamim | Portfolio & Projects',
@@ -32,6 +33,9 @@ export default async function Home() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50  to-blue-50 dark:from-gray-900 dark:to-gray-800'>
+      {/* Premium Entrance Intro Loader */}
+      <IntroLoader name={user?.name || 'Hamim'} />
+
       {/* Hero Section */}
       <Herosection user={user ? JSON.parse(JSON.stringify(user)) : null} />
 

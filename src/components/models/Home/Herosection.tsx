@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Typewriter from '@/components/ui/typewriter';
 import { User } from '@/types/user';
 import Image from 'next/image';
@@ -17,7 +17,7 @@ function BackgroundOrbs() {
         className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 dark:opacity-10"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.511 0.241 264) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.58 0.17 175) 0%, transparent 70%)',
           animation: 'orb-drift-1 12s ease-in-out infinite',
         }}
       />
@@ -26,7 +26,7 @@ function BackgroundOrbs() {
         className="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full opacity-15 dark:opacity-10"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.459 0.25 280) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.64 0.16 175) 0%, transparent 70%)',
           animation: 'orb-drift-2 16s ease-in-out infinite',
         }}
       />
@@ -35,7 +35,7 @@ function BackgroundOrbs() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full opacity-5 dark:opacity-5"
         style={{
           background:
-            'radial-gradient(circle, oklch(0.585 0.213 264) 0%, transparent 70%)',
+            'radial-gradient(circle, oklch(0.58 0.17 175) 0%, transparent 70%)',
           animation: 'orb-drift-3 20s ease-in-out infinite',
         }}
       />
@@ -71,36 +71,13 @@ function StatBadge({
       className="flex flex-col items-center px-5 py-3 rounded-2xl border border-white/20 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-md shadow-sm"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span className="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent leading-none">
+      <span className="text-2xl font-extrabold bg-gradient-to-r from-teal-650 to-teal-500 bg-clip-text text-transparent leading-none">
         {value}
       </span>
       <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium tracking-wide uppercase">
         {label}
       </span>
     </div>
-  );
-}
-
-// ── Social icon button ────────────────────────────────────────────────────────
-function SocialBtn({
-  href,
-  label,
-  children,
-}: {
-  href: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:scale-110 transition-all duration-200 backdrop-blur-sm shadow-sm"
-    >
-      {children}
-    </a>
   );
 }
 
@@ -129,6 +106,31 @@ export default function Herosection({ user }: { user: User }) {
 
     window.addEventListener('mousemove', handleMove);
     return () => window.removeEventListener('mousemove', handleMove);
+  }, []);
+
+  const [startAnimation, setStartAnimation] = useState(false);
+
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('portfolio_intro_visited');
+    if (hasVisited === 'true') {
+      setStartAnimation(true);
+    } else {
+      const timer = setTimeout(() => {
+        setStartAnimation(true);
+      }, 4300);
+
+      const checkSkip = setInterval(() => {
+        if (sessionStorage.getItem('portfolio_intro_visited') === 'true') {
+          setStartAnimation(true);
+          clearInterval(checkSkip);
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(checkSkip);
+      };
+    }
   }, []);
 
   const professionLabel = snakeToProfession(
@@ -204,54 +206,58 @@ export default function Herosection({ user }: { user: User }) {
 
             {/* Available badge */}
             <div
-              className="hero-text-animate inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-wider uppercase mb-6 backdrop-blur-sm shadow-sm"
-              style={{ animationDelay: '0.05s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-semibold tracking-wider uppercase mb-6 backdrop-blur-sm shadow-sm`}
+              style={startAnimation ? { animationDelay: '0.05s' } : {}}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-505 animate-pulse" />
               Available for opportunities
             </div>
 
             {/* Greeting + name */}
             <h1
-              className="hero-text-animate text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-4"
-              style={{ animationDelay: '0.15s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-4`}
+              style={startAnimation ? { animationDelay: '0.15s' } : {}}
             >
               <span className="text-gray-800 dark:text-white">Hi, I&apos;m</span>
               <br />
               <span
-                className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent"
+                className="bg-gradient-to-r from-teal-600 to-teal-500 bg-clip-text text-transparent"
                 style={{ WebkitBackgroundClip: 'text' }}
               >
-                <Typewriter
-                  texts={[user?.name || 'Developer']}
-                  speed={90}
-                  deleteSpeed={80}
-                  pauseTime={4000}
-                  className="inherit"
-                />
+                {startAnimation && (
+                  <Typewriter
+                    texts={[user?.name || 'Developer']}
+                    speed={90}
+                    deleteSpeed={80}
+                    pauseTime={4000}
+                    className="inherit"
+                  />
+                )}
               </span>
             </h1>
 
             {/* Profession typewriter */}
             <div
-              className="hero-text-animate flex items-center gap-2 mb-6 h-10"
-              style={{ animationDelay: '0.25s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} flex items-center gap-2 mb-6 h-10`}
+              style={startAnimation ? { animationDelay: '0.25s' } : {}}
             >
-              <span className="w-8 h-px bg-gradient-to-r from-blue-500 to-violet-500 rounded-full hidden sm:block" />
+              <span className="w-8 h-px bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full hidden sm:block" />
               <p className="text-xl sm:text-2xl font-semibold text-gray-600 dark:text-gray-300">
-                <Typewriter
-                  texts={professions}
-                  speed={80}
-                  deleteSpeed={50}
-                  pauseTime={3000}
-                />
+                {startAnimation && (
+                  <Typewriter
+                    texts={professions}
+                    speed={80}
+                    deleteSpeed={50}
+                    pauseTime={3000}
+                  />
+                )}
               </p>
             </div>
 
             {/* Bio */}
             <p
-              className="hero-text-animate text-base sm:text-lg text-gray-500 dark:text-gray-400 leading-relaxed max-w-lg mb-8"
-              style={{ animationDelay: '0.35s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} text-base sm:text-lg text-gray-500 dark:text-gray-400 leading-relaxed max-w-lg mb-8`}
+              style={startAnimation ? { animationDelay: '0.35s' } : {}}
             >
               {user?.bio ||
                 'Building premium digital experiences with modern technologies. Passionate about clean code, performance, and great design.'}
@@ -259,12 +265,12 @@ export default function Herosection({ user }: { user: User }) {
 
             {/* CTA buttons */}
             <div
-              className="hero-text-animate flex flex-col sm:flex-row gap-4 mb-10"
-              style={{ animationDelay: '0.45s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} flex flex-col sm:flex-row gap-4 mb-10`}
+              style={startAnimation ? { animationDelay: '0.45s' } : {}}
             >
               <Link
                 href="/projects"
-                className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 overflow-hidden"
+                className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-555 text-white font-semibold text-sm shadow-lg shadow-teal-500/10 hover:shadow-teal-500/20 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   {/* Arrow icon */}
@@ -273,12 +279,12 @@ export default function Herosection({ user }: { user: User }) {
                   </svg>
                   View My Work
                 </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                <span className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </Link>
 
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-white/5 text-gray-700 dark:text-gray-200 font-semibold text-sm backdrop-blur-sm hover:bg-white dark:hover:bg-white/10 hover:scale-[1.03] active:scale-[0.98] hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white/60 dark:bg-white/5 text-gray-700 dark:text-gray-200 font-semibold text-sm backdrop-blur-sm hover:bg-white dark:hover:bg-white/10 hover:scale-[1.03] active:scale-[0.98] hover:border-teal-300 dark:hover:border-teal-500 transition-all duration-200 shadow-sm"
               >
                 {/* Mail icon */}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
@@ -290,8 +296,8 @@ export default function Herosection({ user }: { user: User }) {
 
             {/* Stats row */}
             <div
-              className="hero-text-animate flex flex-wrap gap-3 justify-center lg:justify-start"
-              style={{ animationDelay: '0.55s' }}
+              className={`${startAnimation ? 'hero-text-animate' : 'opacity-0'} flex flex-wrap gap-3 justify-center lg:justify-start`}
+              style={startAnimation ? { animationDelay: '0.55s' } : {}}
             >
               <StatBadge
                 value={`${user?.projects?.length ?? 0}+`}
@@ -317,7 +323,7 @@ export default function Herosection({ user }: { user: User }) {
               aria-hidden
             >
               <div
-                className="ring-spin w-[360px] h-[360px] rounded-full border-2 border-dashed border-blue-300/40 dark:border-blue-600/30"
+                className="ring-spin w-[360px] h-[360px] rounded-full border-2 border-dashed border-teal-300/40 dark:border-teal-600/30"
               />
             </div>
 
@@ -328,7 +334,7 @@ export default function Herosection({ user }: { user: User }) {
             >
               <div
                 style={{ animation: 'ring-spin 20s linear infinite reverse' }}
-                className="w-[310px] h-[310px] rounded-full border border-violet-300/30 dark:border-violet-600/20"
+                className="w-[310px] h-[310px] rounded-full border border-emerald-300/30 dark:border-emerald-600/20"
               />
             </div>
 
@@ -337,14 +343,14 @@ export default function Herosection({ user }: { user: User }) {
               className="absolute w-72 h-72 rounded-full opacity-20 dark:opacity-15 blur-3xl -z-10"
               style={{
                 background:
-                  'radial-gradient(circle, oklch(0.511 0.241 264) 0%, oklch(0.459 0.25 280) 100%)',
+                  'radial-gradient(circle, oklch(0.58 0.17 175) 0%, oklch(0.64 0.16 175) 100%)',
               }}
             />
 
             {/* Avatar card */}
-            <div className="avatar-float relative">
+            <div className={`avatar-float relative transition-all duration-1000 transform ${startAnimation ? 'scale-100 opacity-100' : 'scale-75 opacity-0'}`}>
               {/* Glassmorphism frame */}
-              <div className="p-2 rounded-full bg-gradient-to-br from-blue-500/30 via-violet-500/20 to-fuchsia-500/30 backdrop-blur-sm shadow-2xl">
+              <div className="p-2 rounded-full bg-gradient-to-br from-teal-500/30 via-emerald-500/20 to-teal-500/30 backdrop-blur-sm shadow-2xl">
                 <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden border-4 border-white/50 dark:border-white/10 shadow-2xl">
                   <Image
                     src={user?.picture || '/placeholder.jpg'}
@@ -360,16 +366,16 @@ export default function Herosection({ user }: { user: User }) {
 
               {/* Floating tech badge – top right */}
               <div
-                className="absolute -top-3 -right-3 px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 shadow-lg border border-gray-100 dark:border-white/10 text-xs font-bold text-blue-600 dark:text-blue-400 backdrop-blur-sm"
-                style={{ animation: 'badge-pop 0.6s ease 0.8s both' }}
+                className={`absolute -top-3 -right-3 px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 shadow-lg border border-gray-100 dark:border-white/10 text-xs font-bold text-teal-600 dark:text-teal-400 backdrop-blur-sm transition-all duration-500 ${startAnimation ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+                style={startAnimation ? { animation: 'badge-pop 0.6s ease 0.8s both' } : {}}
               >
                 💻 Full Stack
               </div>
 
               {/* Floating open-to-work badge – bottom left */}
               <div
-                className="absolute -bottom-3 -left-3 px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 shadow-lg border border-gray-100 dark:border-white/10 text-xs font-bold text-emerald-600 dark:text-emerald-400 backdrop-blur-sm flex items-center gap-1.5"
-                style={{ animation: 'badge-pop 0.6s ease 1s both' }}
+                className={`absolute -bottom-3 -left-3 px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 shadow-lg border border-gray-100 dark:border-white/10 text-xs font-bold text-emerald-600 dark:text-emerald-400 backdrop-blur-sm flex items-center gap-1.5 transition-all duration-500 ${startAnimation ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+                style={startAnimation ? { animation: 'badge-pop 0.6s ease 1s both' } : {}}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Open to Work

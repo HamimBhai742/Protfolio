@@ -18,6 +18,23 @@ const updateProjectSchema = z.object({
   category: z.enum(['web', 'api', 'mobile', 'other']).optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional().nullable().or(z.literal('')),
+  images: z.array(z.string()).optional(),
+  videoUrl: z.string().url().optional().nullable().or(z.literal('')),
+  metrics: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
+  team: z.array(z.object({
+    name: z.string().optional(),
+    role: z.string().optional(),
+    avatar: z.string().optional().nullable(),
+    github: z.string().optional().nullable().or(z.literal('')),
+    linkedin: z.string().optional().nullable().or(z.literal('')),
+  })).optional(),
+  testimonials: z.array(z.object({
+    clientName: z.string().optional(),
+    clientCompany: z.string().optional(),
+    clientAvatar: z.string().optional().nullable(),
+    feedback: z.string().optional(),
+    rating: z.number().min(1).max(5).optional(),
+  })).optional(),
 });
 
 export async function PUT(

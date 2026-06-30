@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import { Plus, Grid3X3, List, Search } from 'lucide-react';
+import Link from 'next/link';
 // import { AddProjectForm } from '@/components/models/Projects';
 import ProjectsList from '@/components/models/MyProjects/ProjectsList';
 import { ProjectFiltersType } from '@/types/projects.type';
@@ -33,13 +34,13 @@ export default function MyProjectsPage() {
               </p>
             </div>
 
-            <button
-              onClick={() => setShowAddForm(true)}
+            <Link
+              href='/dashboard/create-project'
               className='flex max-sm:w-fit items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-medium'
             >
               <Plus className='h-5 w-5' />
               <span>Add Project</span>
-            </button>
+            </Link>
           </div>
         </div>
 

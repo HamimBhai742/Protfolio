@@ -11,6 +11,23 @@ export interface Project {
   category: ProjectCategory;
   startDate: string;
   endDate: string;
+  images?: string[];
+  videoUrl?: string;
+  metrics?: Array<{ label: string; value: string }>;
+  team?: Array<{
+    name: string;
+    role: string;
+    avatar?: string;
+    github?: string;
+    linkedin?: string;
+  }>;
+  testimonials?: Array<{
+    clientName: string;
+    clientCompany: string;
+    clientAvatar?: string;
+    feedback: string;
+    rating: number;
+  }>;
   status: ProjectStatus;
 }
 

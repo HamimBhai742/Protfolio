@@ -13,6 +13,23 @@ export interface IProject extends Document {
   liveUrl?: string;
   status: 'completed' | 'in_progress' | 'planned';
   technologies: string[];
+  images?: string[];
+  videoUrl?: string;
+  metrics?: Array<{ label: string; value: string }>;
+  team?: Array<{
+    name: string;
+    role: string;
+    avatar?: string;
+    github?: string;
+    linkedin?: string;
+  }>;
+  testimonials?: Array<{
+    clientName: string;
+    clientCompany: string;
+    clientAvatar?: string;
+    feedback: string;
+    rating: number;
+  }>;
   startDate: string;
   endDate?: string;
   createdAt: Date;
@@ -41,6 +58,41 @@ const ProjectSchema = new Schema<IProject>(
       required: true,
     },
     technologies: { type: [String], default: [] },
+    images: { type: [String], default: [] },
+    videoUrl: { type: String },
+    metrics: {
+      type: [
+        {
+          label: { type: String, required: true },
+          value: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
+    team: {
+      type: [
+        {
+          name: { type: String, required: true },
+          role: { type: String, required: true },
+          avatar: { type: String },
+          github: { type: String },
+          linkedin: { type: String },
+        },
+      ],
+      default: [],
+    },
+    testimonials: {
+      type: [
+        {
+          clientName: { type: String, required: true },
+          clientCompany: { type: String, required: true },
+          clientAvatar: { type: String },
+          feedback: { type: String, required: true },
+          rating: { type: Number, required: true, default: 5 },
+        },
+      ],
+      default: [],
+    },
     startDate: { type: String, required: true },
     endDate: { type: String },
   },

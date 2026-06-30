@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  X, Save, Link as LinkIcon, Calendar, Tag, Upload, ArrowLeft, Plus,
+  X, Upload, Link as LinkIcon, Calendar, Tag, Plus, ArrowLeft,
   BarChart3, Video, Users, MessageSquare, Star, Trash2
 } from 'lucide-react';
 import Image from 'next/image';
@@ -13,20 +13,13 @@ import UploadCloudinary from '@/upload/UploadCloudinary';
 import toast from 'react-hot-toast';
 import { ImSpinner9 } from 'react-icons/im';
 import { cleanObj } from '@/actions/cleanObj';
-import CardSkeleton from '@/components/shared/CardSkelton/CardSkleton';
 import RichTextEditor from '@/components/shared/RichTextEditor';
-import { Project as IProject } from '@/types/projects.type';
 
-interface UpdateProjectFormProps {
-  projectId: string;
-}
-
-export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps) {
+export default function CreateProjectForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    features: '',
     details: '',
     technologies: [] as string[],
     liveUrl: '',
@@ -35,27 +28,24 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     startDate: '',
     endDate: '',
     status: '',
+    features: '',
     videoUrl: '',
   });
 
   const [techInput, setTechInput] = useState('');
-  const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [existingImages, setExistingImages] = useState<string[]>([]);
-  const [newScreenshotFiles, setNewScreenshotFiles] = useState<File[]>([]);
-  
-  const [isLoading, setIsLoading] = useState(true);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Advanced states
+  // Dynamic KPI Metrics State
   const [metrics, setMetrics] = useState<Array<{ label: string; value: string }>>([]);
   const [newMetric, setNewMetric] = useState({ label: '', value: '' });
 
+  // Dynamic Team State
   const [teamMembers, setTeamMembers] = useState<Array<{
     name: string;
     role: string;
     avatarFile: File | null;
-    avatarUrl?: string;
     github?: string;
     linkedin?: string;
   }>>([]);
@@ -67,11 +57,11 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     linkedin: '',
   });
 
+  // Dynamic Testimonials State
   const [testimonials, setTestimonials] = useState<Array<{
     clientName: string;
     clientCompany: string;
     clientAvatarFile: File | null;
-    clientAvatarUrl?: string;
     feedback: string;
     rating: number;
   }>>([]);
@@ -83,79 +73,13 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     rating: 5,
   });
 
-  // Load project details
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const res = await fetch(`/api/v2/projects/my-project/${projectId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        const result = await res.json();
-        if (result?.success && result?.data) {
-          const project = result.data as IProject;
-          setFormData({
-            title: project.title || '',
-            description: project.description || '',
-            features: project.features || '',
-            details: project.details || '',
-            technologies: project.technologies || [],
-            liveUrl: project.liveUrl || '',
-            githubUrl: project.githubUrl || '',
-            category: project.category || '',
-            startDate: project.startDate || '',
-            endDate: project.endDate || '',
-            status: project.status || '',
-            videoUrl: project.videoUrl || '',
-          });
-          setThumbnailPreview(project.thumbnail || '');
-          setExistingImages(project.images || []);
-          setMetrics(project.metrics || []);
-
-          // Map team members
-          if (project.team) {
-            setTeamMembers(project.team.map((m) => ({
-              name: m.name,
-              role: m.role,
-              avatarUrl: m.avatar,
-              avatarFile: null,
-              github: m.github || '',
-              linkedin: m.linkedin || '',
-            })));
-          }
-
-          // Map testimonials
-          if (project.testimonials) {
-            setTestimonials(project.testimonials.map((t) => ({
-              clientName: t.clientName,
-              clientCompany: t.clientCompany,
-              clientAvatarUrl: t.clientAvatar,
-              clientAvatarFile: null,
-              feedback: t.feedback,
-              rating: t.rating || 5,
-            })));
-          }
-        } else {
-          toast.error(result?.message || 'Failed to load project details');
-          router.push('/dashboard/my-projects');
-        }
-      } catch (error) {
-        console.error('Failed to fetch project:', error);
-        toast.error('An error occurred while loading project details.');
-        router.push('/dashboard/my-projects');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProject();
-  }, [projectId, router]);
-
   // KPI Actions
   const handleAddMetric = () => {
     if (newMetric.label.trim() && newMetric.value.trim()) {
       setMetrics(prev => [...prev, { ...newMetric }]);
       setNewMetric({ label: '', value: '' });
+    } else {
+      toast.error('Both label and value are required for metrics');
     }
   };
   const handleRemoveMetric = (idx: number) => {
@@ -167,6 +91,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     if (newMember.name.trim() && newMember.role.trim()) {
       setTeamMembers(prev => [...prev, { ...newMember }]);
       setNewMember({ name: '', role: '', avatarFile: null, github: '', linkedin: '' });
+    } else {
+      toast.error('Collaborator name and role are required');
     }
   };
   const handleRemoveMember = (idx: number) => {
@@ -178,6 +104,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     if (newTestimonial.clientName.trim() && newTestimonial.feedback.trim()) {
       setTestimonials(prev => [...prev, { ...newTestimonial }]);
       setNewTestimonial({ clientName: '', clientCompany: '', clientAvatarFile: null, feedback: '', rating: 5 });
+    } else {
+      toast.error('Client name and feedback content are required');
     }
   };
   const handleRemoveTestimonial = (idx: number) => {
@@ -201,25 +129,21 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
     }));
   };
 
-  const handleRemoveExistingImage = (imageUrl: string) => {
-    setExistingImages(prev => prev.filter(img => img !== imageUrl));
-  };
-
-  const handleNewScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
-      setNewScreenshotFiles(prev => [...prev, ...fileArray]);
+      setScreenshotFiles(prev => [...prev, ...fileArray]);
     }
   };
 
-  const handleRemoveNewScreenshot = (indexToRemove: number) => {
-    setNewScreenshotFiles(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  const handleRemoveScreenshot = (indexToRemove: number) => {
+    setScreenshotFiles(prev => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!thumbnailPreview && !thumbnailFile) {
+    if (!thumbnail) {
       toast.error('Project thumbnail is required');
       return;
     }
@@ -242,30 +166,24 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
 
     setIsSubmitting(true);
     try {
-      // 1. Upload thumbnail if changed
-      let finalThumbnailUrl = thumbnailPreview;
-      if (thumbnailFile) {
-        const uploadedThumb = await UploadCloudinary({ thumbnail: thumbnailFile });
-        if (uploadedThumb) {
-          finalThumbnailUrl = uploadedThumb;
-        }
+      // 1. Upload thumbnail
+      const thumbnailUrl = await UploadCloudinary({ thumbnail });
+      if (!thumbnailUrl) {
+        throw new Error('Thumbnail upload failed');
       }
 
-      // 2. Upload new gallery screenshots
-      const uploadedScreenshotUrls: string[] = [];
-      if (newScreenshotFiles.length > 0) {
-        const uploadPromises = newScreenshotFiles.map(file => UploadCloudinary({ thumbnail: file }));
+      // 2. Upload multiple screenshots
+      const screenshotUrls: string[] = [];
+      if (screenshotFiles.length > 0) {
+        const uploadPromises = screenshotFiles.map(file => UploadCloudinary({ thumbnail: file }));
         const urls = await Promise.all(uploadPromises);
-        uploadedScreenshotUrls.push(...(urls.filter(Boolean) as string[]));
+        screenshotUrls.push(...(urls.filter(Boolean) as string[]));
       }
 
-      // Combine existing + newly uploaded screenshots
-      const finalImages = [...existingImages, ...uploadedScreenshotUrls];
-
-      // 3. Upload team member avatars
+      // 3. Upload team avatars
       const uploadedTeam = await Promise.all(
         teamMembers.map(async (member) => {
-          let avatar = member.avatarUrl || '';
+          let avatar = '';
           if (member.avatarFile) {
             const url = await UploadCloudinary({ thumbnail: member.avatarFile });
             if (url) avatar = url;
@@ -283,7 +201,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
       // 4. Upload client reviews avatars
       const uploadedReviews = await Promise.all(
         testimonials.map(async (review) => {
-          let clientAvatar = review.clientAvatarUrl || '';
+          let clientAvatar = '';
           if (review.clientAvatarFile) {
             const url = await UploadCloudinary({ thumbnail: review.clientAvatarFile });
             if (url) clientAvatar = url;
@@ -298,20 +216,20 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
         })
       );
 
-      // 5. Submit payload
+      // 5. Prepare body payload
       const payload = {
         ...formData,
-        thumbnail: finalThumbnailUrl,
-        images: finalImages,
+        thumbnail: thumbnailUrl,
+        images: screenshotUrls,
         metrics,
         team: uploadedTeam,
         testimonials: uploadedReviews,
       };
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/projects/update/${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/create`,
         {
-          method: 'PUT',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -319,35 +237,27 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
           body: JSON.stringify(cleanObj(payload)),
         }
       );
-
+      
       const result = await res.json();
       if (result?.success) {
-        toast.success(result?.message || 'Project updated successfully');
+        toast.success(result?.message || 'Project created successfully');
         router.push('/dashboard/my-projects');
       } else {
-        toast.error(result?.message || 'Failed to update project');
+        toast.error(result?.message || 'Failed to create project');
       }
     } catch (error) {
-      console.error('Error updating project:', error);
-      toast.error('An error occurred while updating the project.');
+      console.error('Error creating project:', error);
+      toast.error('An error occurred while creating the project.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto p-4">
-        <CardSkeleton />
-      </div>
-    );
-  }
-
   return (
     <div className="bg-gradient-to-br from-gray-55 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 px-4">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header */}
+        {/* Back and Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center space-x-4">
             <button
@@ -358,10 +268,10 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
             </button>
             <div>
               <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-                Update Project
+                Add New Project
               </h1>
-              <p className="text-gray-655 dark:text-gray-400 mt-1">
-                Edit and refine details for project: <span className="text-orange-600 dark:text-orange-450 font-bold">{formData.title}</span>
+              <p className="text-gray-650 dark:text-gray-400 mt-1">
+                Showcase your development milestones, stats, client feedback, and team details
               </p>
             </div>
           </div>
@@ -372,13 +282,13 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
             
             {/* Project Basic Section */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-850 pb-2">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-2">
                 Basic Info
               </h3>
-
+              
               {/* Title */}
               <div>
-                <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-gray-705 dark:text-gray-300 mb-2">
                   Project Title *
                 </label>
                 <input
@@ -388,8 +298,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, title: e.target.value }))
                   }
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
-                  placeholder="Enter project title"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                  placeholder="Enter a descriptive project name..."
                 />
               </div>
 
@@ -408,8 +318,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       description: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none text-gray-900 dark:text-white"
-                  placeholder="Describe your project"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none text-gray-900 dark:text-white"
+                  placeholder="Describe your project summary..."
                 />
                 <span className={`text-xs absolute right-3 bottom-3 block ${formData.description.length < 200 ? 'text-red-505 dark:text-red-400 font-bold' : 'text-gray-400'}`}>
                   {formData.description.length} / 200
@@ -419,7 +329,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               {/* Features Editor */}
               <div>
                 <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300 mb-2">
-                  Features * <span className="text-xs text-gray-400 font-normal">(Provide bullet lists or comma-separated lists of features with Google Doc style formatting)</span>
+                  Features * <span className="text-xs text-gray-400 font-normal">(Formatted layout of core functionalities)</span>
                 </label>
                 <RichTextEditor
                   value={formData.features}
@@ -434,24 +344,24 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               {/* Details Editor */}
               <div>
                 <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300 mb-2">
-                  Full Project Details <span className="text-xs text-gray-400 font-normal">(Optional formatted context about architecture, milestones, or libraries used)</span>
+                  Full Project Details
                 </label>
                 <RichTextEditor
                   value={formData.details}
                   onChange={(html) =>
                     setFormData((prev) => ({ ...prev, details: html }))
                   }
-                  placeholder="Describe your design patterns, database structures, deployment details..."
+                  placeholder="Describe design patterns, structures, and systems details..."
                   minHeight="220px"
                 />
               </div>
             </div>
 
-            {/* Tech & Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-105 dark:border-gray-805">
+            {/* Classification and Dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100 dark:border-gray-805">
               <div>
                 <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300 mb-2">
-                  Technologies
+                  Technologies Used
                 </label>
                 <div className="flex gap-2 items-center mb-3">
                   <div className="relative flex-1">
@@ -466,8 +376,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                           handleAddTech();
                         }
                       }}
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
-                      placeholder="React, Node.js, MongoDB"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                      placeholder="Type a tech (e.g. React) and press Enter"
                     />
                   </div>
                   <button
@@ -481,9 +391,9 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                 {/* Tech badges */}
                 <div className="flex flex-wrap gap-2">
                   {formData.technologies.map(tech => (
-                    <span key={tech} className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-orange-105/80 text-orange-705 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-200/50 dark:border-orange-800/30">
+                    <span key={tech} className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-105/80 text-blue-705 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/30">
                       {tech}
-                      <button type="button" onClick={() => handleRemoveTech(tech)} className="ml-2 text-orange-600 dark:text-orange-405 hover:text-orange-850"><X className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => handleRemoveTech(tech)} className="ml-2 text-blue-600 dark:text-blue-400 hover:text-blue-850"><X className="w-3.5 h-3.5" /></button>
                     </span>
                   ))}
                 </div>
@@ -499,7 +409,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, category: e.target.value }))
                   }
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                 >
                   <option value="">Select category</option>
                   <option value="web">Web Application</option>
@@ -510,7 +420,6 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               </div>
             </div>
 
-            {/* Status & Dates */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300 mb-2">
@@ -522,8 +431,9 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, status: e.target.value }))
                   }
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                 >
+                  <option value="">Select status</option>
                   <option value="completed">Completed</option>
                   <option value="in_progress">In Progress</option>
                   <option value="planned">Planned</option>
@@ -547,7 +457,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     }
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Select start date"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -568,7 +478,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     }
                     dateFormat="dd/MM/yyyy"
                     placeholderText="Select end date"
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -586,7 +496,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     type="url"
                     value={formData.liveUrl}
                     onChange={(e) => setFormData((prev) => ({ ...prev, liveUrl: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                     placeholder="https://example.com"
                   />
                 </div>
@@ -602,7 +512,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     type="url"
                     value={formData.githubUrl}
                     onChange={(e) => setFormData((prev) => ({ ...prev, githubUrl: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                     placeholder="https://github.com/username/repo"
                   />
                 </div>
@@ -618,17 +528,17 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     type="url"
                     value={formData.videoUrl}
                     onChange={(e) => setFormData((prev) => ({ ...prev, videoUrl: e.target.value }))}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-205 dark:border-gray-700/80 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                     placeholder="https://www.youtube.com/embed/..."
                   />
                 </div>
               </div>
             </div>
 
-            {/* KPI Metrics */}
+            {/* Advanced Section: KPI Metrics */}
             <div className="pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
               <h4 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-orange-500" />
+                <BarChart3 className="h-5 w-5 text-blue-500" />
                 <span>KPI Metrics & Achievements</span>
               </h4>
               
@@ -639,8 +549,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     type="text"
                     value={newMetric.label}
                     onChange={(e) => setNewMetric(prev => ({ ...prev, label: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
-                    placeholder="e.g., Load Time, Active Users"
+                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                    placeholder="e.g., Uptime, Load Time, Active Users"
                   />
                 </div>
                 <div>
@@ -649,28 +559,28 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     type="text"
                     value={newMetric.value}
                     onChange={(e) => setNewMetric(prev => ({ ...prev, value: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
-                    placeholder="e.g., 40% Decreased, 10k+"
+                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                    placeholder="e.g., 99.99%, 40% Decreased, 15k+"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleAddMetric}
-                  className="w-full md:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                  className="w-full md:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Metric</span>
                 </button>
               </div>
 
-              {/* KPI metrics list */}
+              {/* KPI metrics list display */}
               {metrics.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                   {metrics.map((m, idx) => (
                     <div key={idx} className="relative p-4 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-205 dark:border-gray-700/60 shadow-sm flex flex-col justify-between group">
                       <div>
                         <p className="text-xs text-gray-450 dark:text-gray-400 font-semibold">{m.label}</p>
-                        <p className="text-xl font-extrabold text-orange-600 dark:text-orange-450 mt-1">{m.value}</p>
+                        <p className="text-xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">{m.value}</p>
                       </div>
                       <button
                         type="button"
@@ -685,7 +595,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               )}
             </div>
 
-            {/* Team Collaborators */}
+            {/* Advanced Section: Team Collaborators */}
             <div className="pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
               <h4 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <Users className="h-5 w-5 text-purple-500" />
@@ -695,45 +605,45 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               <div className="bg-gray-50/50 dark:bg-gray-800/30 p-4 rounded-2xl border border-gray-200/50 dark:border-gray-800 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">Collaborator Name</label>
+                    <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">Collaborator Name</label>
                     <input
                       type="text"
                       value={newMember.name}
                       onChange={(e) => setNewMember(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
                       placeholder="e.g. John Doe"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">Collaborator Role</label>
+                    <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">Collaborator Role</label>
                     <input
                       type="text"
                       value={newMember.role}
                       onChange={(e) => setNewMember(prev => ({ ...prev, role: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
-                      placeholder="e.g. Front-End Dev"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      placeholder="e.g. Lead Designer"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">GitHub URL</label>
+                    <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">GitHub URL</label>
                     <input
                       type="url"
                       value={newMember.github}
                       onChange={(e) => setNewMember(prev => ({ ...prev, github: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
                       placeholder="https://github.com/username"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">LinkedIn URL</label>
+                    <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">LinkedIn URL</label>
                     <input
                       type="url"
                       value={newMember.linkedin}
                       onChange={(e) => setNewMember(prev => ({ ...prev, linkedin: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
                       placeholder="https://linkedin.com/in/username"
                     />
                   </div>
@@ -741,7 +651,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
 
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                   <div className="flex items-center gap-4 w-full sm:w-1/2">
-                    <label className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors shadow-sm text-xs font-semibold text-gray-705 dark:text-gray-300">
+                    <label className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors shadow-sm text-xs font-semibold text-gray-700 dark:text-gray-300">
                       <span>Upload Avatar</span>
                       <input
                         type="file"
@@ -754,8 +664,8 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       />
                     </label>
                     {newMember.avatarFile && (
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-250">
+                      <div className="flex items-center gap-2 text-xs text-gray-505 dark:text-gray-400">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-200">
                           <Image src={URL.createObjectURL(newMember.avatarFile)} alt="Avatar" fill className="object-cover" />
                         </div>
                         <span>Selected</span>
@@ -766,7 +676,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                   <button
                     type="button"
                     onClick={handleAddMember}
-                    className="w-full sm:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                    className="w-full sm:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-purple-650 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
                   >
                     <Plus className="h-4 w-4" />
                     <span>Add Collaborator</span>
@@ -781,7 +691,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     <div key={idx} className="relative flex items-center gap-3 p-4 bg-white dark:bg-gray-800/80 border border-gray-205 dark:border-gray-700/60 rounded-2xl shadow-sm group">
                       <div className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 shrink-0">
                         <Image
-                          src={member.avatarFile ? URL.createObjectURL(member.avatarFile) : member.avatarUrl || '/placeholder-avatar.png'}
+                          src={member.avatarFile ? URL.createObjectURL(member.avatarFile) : '/placeholder-avatar.png'}
                           alt={member.name}
                           fill
                           className="object-cover"
@@ -794,7 +704,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       <button
                         type="button"
                         onClick={() => handleRemoveMember(idx)}
-                        className="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-955/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                        className="absolute top-2 right-2 p-1.5 text-gray-405 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                       >
                         <Trash2 className="h-3.5 h-3.5" />
                       </button>
@@ -804,7 +714,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               )}
             </div>
 
-            {/* Client Testimonials */}
+            {/* Advanced Section: Client Testimonials */}
             <div className="pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
               <h4 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-emerald-500" />
@@ -814,12 +724,12 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               <div className="bg-gray-50/50 dark:bg-gray-800/30 p-4 rounded-2xl border border-gray-200/50 dark:border-gray-800 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">Client Name</label>
+                    <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">Client Name</label>
                     <input
                       type="text"
                       value={newTestimonial.clientName}
                       onChange={(e) => setNewTestimonial(prev => ({ ...prev, clientName: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
                       placeholder="e.g. Jane Smith"
                     />
                   </div>
@@ -829,26 +739,26 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       type="text"
                       value={newTestimonial.clientCompany}
                       onChange={(e) => setNewTestimonial(prev => ({ ...prev, clientCompany: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
-                      placeholder="e.g. CEO, TechCorp"
+                      className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white"
+                      placeholder="e.g. TechCorp CEO"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-555 dark:text-gray-400 mb-1">Client Review/Feedback</label>
+                  <label className="block text-xs font-bold text-gray-550 dark:text-gray-400 mb-1">Client Review/Feedback</label>
                   <textarea
                     rows={3}
                     value={newTestimonial.feedback}
                     onChange={(e) => setNewTestimonial(prev => ({ ...prev, feedback: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-orange-500 focus:border-transparent text-sm text-gray-900 dark:text-white resize-none"
-                    placeholder="Feedback text..."
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-205 dark:border-gray-750 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 dark:text-white resize-none"
+                    placeholder="Write client's testimonial feedback here..."
                   />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                   <div className="flex items-center gap-6 w-full sm:w-2/3">
-                    <label className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors shadow-sm text-xs font-semibold text-gray-705 dark:text-gray-300 shrink-0">
+                    <label className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors shadow-sm text-xs font-semibold text-gray-700 dark:text-gray-300 shrink-0">
                       <span>Upload Avatar</span>
                       <input
                         type="file"
@@ -871,7 +781,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                     )}
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-555 dark:text-gray-405 shrink-0">Rating:</span>
+                      <span className="text-xs font-bold text-gray-550 dark:text-gray-405 shrink-0">Rating:</span>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
@@ -890,7 +800,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                   <button
                     type="button"
                     onClick={handleAddTestimonial}
-                    className="w-full sm:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-705 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                    className="w-full sm:w-fit flex items-center justify-center space-x-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
                   >
                     <Plus className="h-4 w-4" />
                     <span>Add Testimonial</span>
@@ -911,10 +821,10 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                         </div>
                         <p className="text-xs italic text-gray-650 dark:text-gray-350 line-clamp-3">&ldquo;{review.feedback}&rdquo;</p>
                       </div>
-                      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100 dark:border-gray-805">
+                      <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-100 dark:border-gray-800">
                         <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-200">
                           <Image
-                            src={review.clientAvatarFile ? URL.createObjectURL(review.clientAvatarFile) : review.clientAvatarUrl || '/placeholder-avatar.png'}
+                            src={review.clientAvatarFile ? URL.createObjectURL(review.clientAvatarFile) : '/placeholder-avatar.png'}
                             alt={review.clientName}
                             fill
                             className="object-cover"
@@ -928,7 +838,7 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       <button
                         type="button"
                         onClick={() => handleRemoveTestimonial(idx)}
-                        className="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-955/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                        className="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                       >
                         <Trash2 className="h-3.5 h-3.5" />
                       </button>
@@ -938,76 +848,60 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               )}
             </div>
 
-            {/* Thumbnail and Gallery Display */}
+            {/* Single Thumbnail & Multiple Gallery Upload */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4 border-t border-gray-100 dark:border-gray-800">
               
-              {/* Thumbnail field */}
+              {/* Main Thumbnail Upload */}
               <div className="space-y-4">
-                <label className="block text-sm font-semibold text-gray-755 dark:text-gray-300">
-                  Project Main Thumbnail
+                <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300">
+                  Project Main Thumbnail *
                 </label>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <label className="flex flex-col items-center justify-center w-full sm:w-1/2 h-44 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors shadow-sm">
                     <div className="flex flex-col gap-2 items-center justify-center text-center p-4">
                       <Upload className="h-8 w-8 text-gray-450 dark:text-gray-450" />
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Drag & drop or click to replace Main Banner
+                        Drag & drop or click to upload Main Banner
                       </p>
                     </div>
                     <input
+                      required
                       type="file"
                       accept="image/*"
                       className="hidden"
                       onChange={(e) => {
                         const file = e.target.files?.[0] ?? null;
-                        setThumbnailFile(file);
+                        setThumbnail(file);
                       }}
                     />
                   </label>
-                  
-                  <div className="w-full sm:w-1/2 h-44 relative rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
-                    {thumbnailFile ? (
+                  {thumbnail && (
+                    <div className="w-full sm:w-1/2 h-44 relative rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                       <Image
-                        src={URL.createObjectURL(thumbnailFile)}
-                        alt="New Thumbnail Preview"
+                        src={URL.createObjectURL(thumbnail)}
+                        alt="Thumbnail Preview"
                         fill
                         className="object-cover"
                       />
-                    ) : thumbnailPreview ? (
-                      <Image
-                        src={thumbnailPreview}
-                        alt="Current Thumbnail"
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400">No Image</div>
-                    )}
-                    {(thumbnailFile || thumbnailPreview) && (
                       <button
                         type="button"
-                        onClick={() => {
-                          setThumbnailFile(null);
-                          setThumbnailPreview('');
-                        }}
+                        onClick={() => setThumbnail(null)}
                         className="absolute top-2.5 right-2.5 p-1.5 bg-red-650/90 text-white rounded-full hover:bg-red-700 transition-colors shadow-sm"
                       >
                         <X className="w-4 h-4" />
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Screenshots Gallery fields */}
+              {/* Multiple Gallery Images Upload */}
               <div className="space-y-4">
-                <label className="block text-sm font-semibold text-gray-755 dark:text-gray-300">
-                  Project Gallery Screenshots <span className="text-xs text-gray-400 font-normal">(Manage existing and upload new screenshots)</span>
+                <label className="block text-sm font-semibold text-gray-750 dark:text-gray-300">
+                  Project Gallery Screenshots <span className="text-xs text-gray-400 font-normal">(Multiple files supported)</span>
                 </label>
-                
                 <div className="space-y-4">
-                  {/* Drag drop area */}
-                  <label className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors shadow-sm">
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors shadow-sm">
                     <div className="flex flex-col gap-1 items-center justify-center text-center p-2">
                       <Upload className="h-6 w-6 text-gray-450 dark:text-gray-450" />
                       <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -1019,62 +913,32 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
                       multiple
                       accept="image/*"
                       className="hidden"
-                      onChange={handleNewScreenshotChange}
+                      onChange={handleScreenshotChange}
                     />
                   </label>
 
-                  {/* Existing gallery images list */}
-                  {existingImages.length > 0 && (
-                    <div>
-                      <h4 className="text-xs font-bold text-gray-400 dark:text-gray-505 uppercase tracking-wider mb-2">Existing Gallery</h4>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                        {existingImages.map((imgUrl, idx) => (
-                          <div key={idx} className="relative h-20 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden group shadow-sm">
-                            <Image
-                              src={imgUrl}
-                              alt={`Existing gallery ${idx + 1}`}
-                              fill
-                              className="object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveExistingImage(imgUrl)}
-                              className="absolute top-1 right-1 p-1 bg-red-650/90 text-white rounded-full hover:bg-red-700 transition-colors shadow-sm"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                  {/* Screenshots preview grid */}
+                  {screenshotFiles.length > 0 && (
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                      {screenshotFiles.map((file, idx) => (
+                        <div key={idx} className="relative h-20 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden group shadow-sm">
+                          <Image
+                            src={URL.createObjectURL(file)}
+                            alt={`Gallery preview ${idx + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveScreenshot(idx)}
+                            className="absolute top-1 right-1 p-1 bg-red-650/90 text-white rounded-full hover:bg-red-700 transition-colors shadow-sm opacity-90 hover:opacity-100"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
-
-                  {/* New screenshots preview */}
-                  {newScreenshotFiles.length > 0 && (
-                    <div>
-                      <h4 className="text-xs font-bold text-gray-400 dark:text-gray-505 uppercase tracking-wider mb-2">New Screenshots to Upload</h4>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                        {newScreenshotFiles.map((file, idx) => (
-                          <div key={idx} className="relative h-20 rounded-xl border border-orange-200 dark:border-orange-850/80 overflow-hidden group shadow-sm">
-                            <Image
-                              src={URL.createObjectURL(file)}
-                              alt={`New preview ${idx + 1}`}
-                              fill
-                              className="object-cover"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveNewScreenshot(idx)}
-                              className="absolute top-1 right-1 p-1 bg-red-655/90 text-white rounded-full hover:bg-red-700 transition-colors shadow-sm"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                 </div>
               </div>
 
@@ -1092,18 +956,15 @@ export default function UpdateProjectForm({ projectId }: UpdateProjectFormProps)
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 flex items-center justify-center space-x-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
                     <ImSpinner9 className="animate-spin h-5 w-5 mr-2" />
-                    <span>Saving changes...</span>
+                    <span>Uploading images & creating project...</span>
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">
-                    <Save className="h-5 w-5" />
-                    <span>Save Changes</span>
-                  </span>
+                  <span>Create Project</span>
                 )}
               </button>
             </div>

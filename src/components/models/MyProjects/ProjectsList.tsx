@@ -1,21 +1,20 @@
 'use client';
 import { useState, useEffect } from 'react';
-import UpdateProjectForm from './UpdateProjectForm';
 import ProjectCard from './ProjectCard';
 import { Eye } from 'lucide-react';
 import { Project, ProjectsListProps } from '@/types/projects.type';
 import Swal from 'sweetalert2';
-import AddProjectForm from './AddProjectForm';
 import CardSkeleton from '@/components/shared/CardSkelton/CardSkleton';
+import { useRouter } from 'next/navigation';
+
 export default function ProjectsList({
   viewMode,
   filter,
-  setShowAddForm,
-  showAddForm,
 }: ProjectsListProps) {
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setLoading(true);
     const fetchProjects = async () => {
@@ -42,14 +41,7 @@ export default function ProjectsList({
   }, [setLoading, filter]);
 
   const handleEdit = (project: Project) => {
-    setEditingProject(project);
-  };
-
-  const handleUpdate = (updatedProject: Project) => {
-    setLoading(false);
-    setProjects((prev) =>
-      prev.map((p) => (p?.id === updatedProject?.id ? updatedProject : p))
-    );
+    router.push(`/dashboard/update-project/${project.id}`);
   };
 
   const handleDelete = (id: number) => {
@@ -93,9 +85,6 @@ export default function ProjectsList({
         setProjects((prev) => prev.filter((p) => p.id !== id));
       }
     });
-    // if (confirm('Are you sure you want to delete this project?')) {
-    //   setProjects((prev) => prev.filter((p) => p.id !== id));
-    // }
   };
 
   if (loading) {
@@ -121,44 +110,24 @@ export default function ProjectsList({
   }
 
   return (
-    <>
-      <div
-        className={`
-        ${
-          viewMode === 'grid'
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            : 'space-y-4'
-        }
-      `}
-      >
-        {projects?.map((project) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            viewMode={viewMode}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-          />
-        ))}
-      </div>
-
-      {/* Add Project Modal */}
-      {showAddForm && (
-        <AddProjectForm
-          onClose={() => setShowAddForm(false)}
-          onAdd={(project) => {
-            setProjects((prev) => [...prev, project]);
-          }}
+    <div
+      className={`
+      ${
+        viewMode === 'grid'
+          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+          : 'space-y-4'
+      }
+    `}
+    >
+      {projects?.map((project) => (
+        <ProjectCard
+          key={project.id}
+          project={project}
+          viewMode={viewMode}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
         />
-      )}
-
-      {editingProject && (
-        <UpdateProjectForm
-          project={editingProject}
-          onClose={() => setEditingProject(null)}
-          onUpdate={handleUpdate}
-        />
-      )}
-    </>
+      ))}
+    </div>
   );
 }

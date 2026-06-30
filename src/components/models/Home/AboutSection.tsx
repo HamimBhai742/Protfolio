@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Typewriter from '@/components/ui/typewriter';
 import { User } from '@/types/user';
 import SkillBadge from '@/components/ui/SkillBadge';
+import ScrollReveal from '@/components/shared/ScrollReveal';
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
 function StatCard({
@@ -45,27 +46,29 @@ export default function AboutSection({ user }: { user: User }) {
       <div className="max-w-6xl mx-auto">
 
         {/* ── Section header ── */}
-        <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 text-xs font-semibold tracking-widest uppercase mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            Who I Am
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white mb-4">
-            About{' '}
-            <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
-              Me
+        <ScrollReveal direction="up" delay={100}>
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 text-xs font-semibold tracking-widest uppercase mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              Who I Am
             </span>
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-base max-w-xl mx-auto">
-            A quick snapshot of who I am, what I do, and the tools I love.
-          </p>
-        </div>
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white mb-4">
+              About{' '}
+              <span className="bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">
+                Me
+              </span>
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-base max-w-xl mx-auto">
+              A quick snapshot of who I am, what I do, and the tools I love.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* ── Two-column layout ── */}
         <div className="grid lg:grid-cols-2 gap-12 items-start">
 
           {/* ── LEFT: Bio + skills ── */}
-          <div className="space-y-8">
+          <ScrollReveal direction="left" delay={200} className="space-y-8">
             {/* Profession typewriter */}
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-gray-200/60 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-sm shadow-sm">
               <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">I'm an expert in</span>
@@ -125,10 +128,10 @@ export default function AboutSection({ user }: { user: User }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
-          </div>
+          </ScrollReveal>
 
           {/* ── RIGHT: Stats + highlights ── */}
-          <div className="space-y-6">
+          <ScrollReveal direction="right" delay={300} className="space-y-6">
             {/* Stat grid */}
             <div className="grid grid-cols-2 gap-4">
               <StatCard
@@ -176,7 +179,7 @@ export default function AboutSection({ user }: { user: User }) {
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

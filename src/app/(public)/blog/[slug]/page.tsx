@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps) {
         images: [blog.thumbnail],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: 'Blog' };
   }
 }

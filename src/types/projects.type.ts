@@ -12,6 +12,23 @@ export interface Project {
   startDate: string;
   endDate?: string;
   features: string;
+  images?: string[];
+  videoUrl?: string;
+  metrics?: Array<{ label: string; value: string }>;
+  team?: Array<{
+    name: string;
+    role: string;
+    avatar?: string;
+    github?: string;
+    linkedin?: string;
+  }>;
+  testimonials?: Array<{
+    clientName: string;
+    clientCompany: string;
+    clientAvatar?: string;
+    feedback: string;
+    rating: number;
+  }>;
   status: 'completed' | 'in_progress' | 'planned';
 }
 

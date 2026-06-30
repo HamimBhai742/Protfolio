@@ -86,46 +86,34 @@
   --color-muted:          var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary:      var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary:        var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover:        var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card:           var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* ─────────────────────────────────────────────
-   LIGHT MODE — clean slate, indigo brand
+  --color-primary-foreground: var(--primary-/* ─────────────────────────────────────────────
+   LIGHT MODE — clean neutral slate, teal brand
    Palette:
-     bg       #F8FAFC  (slate-50)
+     bg       #FCFCFC  (clean soft white)
      surface  #FFFFFF
      text     #0F172A  (slate-950)
-     brand    #4F46E5  (indigo-600)
-───────────────────────────────────────────── */
+     brand    #0F766E  (teal-700)
+ ───────────────────────────────────────────── */
 :root {
   --radius: 0.625rem;
 
   /* ── page & surfaces ── */
-  --background:      oklch(0.984 0.003 247);   /* #F8FAFC slate-50  */
+  --background:      oklch(0.985 0.002 240);   /* clean warm neutral bg */
   --surface:         oklch(1 0 0);             /* #FFFFFF            */
-  --surface-alt:     oklch(0.975 0.004 247);   /* #F1F5F9 slate-100  */
+  --surface-alt:     oklch(0.965 0.003 240);   /* slate-100/50       */
   --surface-raised:  oklch(1 0 0);             /* cards on light bg  */
   --foreground:      oklch(0.13 0.018 264);    /* #0F172A slate-950  */
 
-  /* ── brand: indigo-600 ── */
-  --brand:           oklch(0.511 0.241 264);   /* #4F46E5 indigo-600 */
-  --brand-dim:       oklch(0.585 0.213 264);   /* #6366F1 indigo-500 */
-  --brand-muted:     oklch(0.935 0.052 264);   /* #EEF2FF indigo-50  */
+  /* ── brand: teal-700 ── */
+  --brand:           oklch(0.58 0.17 175);     /* #0F766E teal-700   */
+  --brand-dim:       oklch(0.64 0.16 175);     /* #0D9488 teal-600   */
+  --brand-muted:     oklch(0.97 0.02 175);     /* #F0FDFA teal-50    */
 
   /* ── borders ── */
-  --border:          oklch(0.913 0.013 247);   /* #E2E8F0 slate-200  */
-  --border-muted:    oklch(0.951 0.007 247);   /* #F1F5F9 slate-100  */
-  --input:           oklch(0.913 0.013 247);
-  --ring:            oklch(0.511 0.241 264);   /* brand for focus    */
+  --border:          oklch(0.93 0.005 240);    /* soft gray border   */
+  --border-muted:    oklch(0.96 0.003 240);    
+  --input:           oklch(0.93 0.005 240);
+  --ring:            oklch(0.58 0.17 175);     /* brand for focus    */
 
   /* ── text hierarchy ── */
   --text-primary:    oklch(0.13 0.018 264);    /* slate-950          */
@@ -133,7 +121,7 @@
   --text-muted:      oklch(0.554 0.023 264);   /* slate-500          */
 
   /* ── status colours ── */
-  --success:         oklch(0.532 0.157 162);   /* emerald-600        */
+  --success:         oklch(0.696 0.17 162);    /* emerald-500        */
   --warning:         oklch(0.769 0.188 70);    /* amber-500          */
   --danger:          oklch(0.577 0.245 27);    /* red-600            */
 
@@ -142,99 +130,99 @@
   --card-foreground: oklch(0.13 0.018 264);
   --popover:         oklch(1 0 0);
   --popover-foreground: oklch(0.13 0.018 264);
-  --primary:         oklch(0.511 0.241 264);
+  --primary:         oklch(0.58 0.17 175);
   --primary-foreground: oklch(1 0 0);
-  --secondary:       oklch(0.975 0.004 247);
+  --secondary:       oklch(0.965 0.003 240);
   --secondary-foreground: oklch(0.13 0.018 264);
-  --muted:           oklch(0.975 0.004 247);
+  --muted:           oklch(0.965 0.003 240);
   --muted-foreground: oklch(0.554 0.023 264);
-  --accent:          oklch(0.935 0.052 264);
-  --accent-foreground: oklch(0.511 0.241 264);
+  --accent:          oklch(0.97 0.02 175);
+  --accent-foreground: oklch(0.58 0.17 175);
   --destructive:     oklch(0.577 0.245 27);
-  --chart-1: oklch(0.511 0.241 264);
-  --chart-2: oklch(0.532 0.157 162);
+  --chart-1: oklch(0.58 0.17 175);
+  --chart-2: oklch(0.696 0.17 162);
   --chart-3: oklch(0.769 0.188 70);
   --chart-4: oklch(0.627 0.265 303);
   --chart-5: oklch(0.645 0.246 16);
-  --sidebar:         oklch(0.984 0.003 247);
+  --sidebar:         oklch(0.985 0.002 240);
   --sidebar-foreground: oklch(0.354 0.023 264);
-  --sidebar-primary: oklch(0.511 0.241 264);
+  --sidebar-primary: oklch(0.58 0.17 175);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent:  oklch(0.935 0.052 264);
-  --sidebar-accent-foreground: oklch(0.511 0.241 264);
-  --sidebar-border:  oklch(0.913 0.013 247);
-  --sidebar-ring:    oklch(0.511 0.241 264);
+  --sidebar-accent:  oklch(0.97 0.02 175);
+  --sidebar-accent-foreground: oklch(0.58 0.17 175);
+  --sidebar-border:  oklch(0.93 0.005 240);
+  --sidebar-ring:    oklch(0.58 0.17 175);
 }
 
 /* ─────────────────────────────────────────────
-   DARK MODE — deep navy, indigo brand
+   DARK MODE — clean dark charcoal slate, teal brand
    Palette:
-     bg       #080C14  deep navy-black
-     surface  #0F1629  rich navy
+     bg       #0F141C  deep warm grey slate
+     surface  #171E28  rich slate dark
      text     #E2E8F0  slate-200
-     brand    #818CF8  indigo-400
-───────────────────────────────────────────── */
+     brand    #2DD4BF  teal-400
+ ───────────────────────────────────────────── */
 .dark {
   /* ── page & surfaces ── */
-  --background:      oklch(0.10 0.025 264);    /* #080C14 deep navy  */
-  --surface:         oklch(0.14 0.025 264);    /* #0F1629 navy       */
-  --surface-alt:     oklch(0.18 0.022 264);    /* #162033 navy card  */
-  --surface-raised:  oklch(0.18 0.022 264);
-  --foreground:      oklch(0.902 0.013 247);   /* #E2E8F0 slate-200  */
+  --background:      oklch(0.12 0.010 180);    /* deep warm charcoal slate */
+  --surface:         oklch(0.16 0.012 180);    /* slate card */
+  --surface-alt:     oklch(0.19 0.012 180);    /* card hover accent */
+  --surface-raised:  oklch(0.19 0.012 180);
+  --foreground:      oklch(0.902 0.013 247);   /* slate-200 */
 
-  /* ── brand: indigo-400 on dark ── */
-  --brand:           oklch(0.682 0.191 264);   /* #818CF8 indigo-400 */
-  --brand-dim:       oklch(0.585 0.213 264);   /* #6366F1 indigo-500 */
-  --brand-muted:     oklch(0.23 0.065 264);    /* #1E1B4B indigo-950 */
+  /* ── brand: teal-450 on dark ── */
+  --brand:           oklch(0.72 0.13 175);     /* teal-400 equivalent */
+  --brand-dim:       oklch(0.64 0.16 175);     
+  --brand-muted:     oklch(0.20 0.05 175);     /* dark teal shadow background */
 
   /* ── borders ── */
-  --border:          oklch(1 0 0 / 10%);
-  --border-muted:    oklch(1 0 0 / 6%);
-  --input:           oklch(1 0 0 / 12%);
-  --ring:            oklch(0.682 0.191 264);
+  --border:          oklch(1 0 0 / 8%);
+  --border-muted:    oklch(1 0 0 / 5%);
+  --input:           oklch(1 0 0 / 10%);
+  --ring:            oklch(0.72 0.13 175);
 
   /* ── text hierarchy ── */
-  --text-primary:    oklch(0.902 0.013 247);   /* slate-200          */
-  --text-secondary:  oklch(0.704 0.024 264);   /* slate-400          */
-  --text-muted:      oklch(0.554 0.023 264);   /* slate-500          */
+  --text-primary:    oklch(0.902 0.013 247);   
+  --text-secondary:  oklch(0.704 0.024 264);   
+  --text-muted:      oklch(0.554 0.023 264);   
 
   /* ── status ── */
-  --success:         oklch(0.696 0.17 162);    /* emerald-400        */
-  --warning:         oklch(0.828 0.189 84);    /* amber-400          */
-  --danger:          oklch(0.704 0.191 22);    /* red-400            */
+  --success:         oklch(0.696 0.17 162);    
+  --warning:         oklch(0.828 0.189 84);    
+  --danger:          oklch(0.704 0.191 22);    
 
   /* ── shadcn compat ── */
-  --card:            oklch(0.14 0.025 264);
+  --card:            oklch(0.16 0.012 180);
   --card-foreground: oklch(0.902 0.013 247);
-  --popover:         oklch(0.14 0.025 264);
+  --popover:         oklch(0.16 0.012 180);
   --popover-foreground: oklch(0.902 0.013 247);
-  --primary:         oklch(0.682 0.191 264);
-  --primary-foreground: oklch(0.10 0.025 264);
-  --secondary:       oklch(0.18 0.022 264);
+  --primary:         oklch(0.72 0.13 175);
+  --primary-foreground: oklch(0.12 0.010 180);
+  --secondary:       oklch(0.19 0.012 180);
   --secondary-foreground: oklch(0.902 0.013 247);
-  --muted:           oklch(0.18 0.022 264);
+  --muted:           oklch(0.19 0.012 180);
   --muted-foreground: oklch(0.554 0.023 264);
-  --accent:          oklch(0.23 0.065 264);
-  --accent-foreground: oklch(0.682 0.191 264);
+  --accent:          oklch(0.20 0.05 175);
+  --accent-foreground: oklch(0.72 0.13 175);
   --destructive:     oklch(0.704 0.191 22);
-  --chart-1: oklch(0.682 0.191 264);
+  --chart-1: oklch(0.72 0.13 175);
   --chart-2: oklch(0.696 0.17 162);
   --chart-3: oklch(0.828 0.189 84);
   --chart-4: oklch(0.627 0.265 303);
   --chart-5: oklch(0.645 0.246 16);
-  --sidebar:         oklch(0.14 0.025 264);
+  --sidebar:         oklch(0.16 0.012 180);
   --sidebar-foreground: oklch(0.704 0.024 264);
-  --sidebar-primary: oklch(0.682 0.191 264);
-  --sidebar-primary-foreground: oklch(0.10 0.025 264);
-  --sidebar-accent:  oklch(0.23 0.065 264);
-  --sidebar-accent-foreground: oklch(0.682 0.191 264);
-  --sidebar-border:  oklch(1 0 0 / 10%);
-  --sidebar-ring:    oklch(0.682 0.191 264);
+  --sidebar-primary: oklch(0.72 0.13 175);
+  --sidebar-primary-foreground: oklch(0.12 0.010 180);
+  --sidebar-accent:  oklch(0.20 0.05 175);
+  --sidebar-accent-foreground: oklch(0.72 0.13 175);
+  --sidebar-border:  oklch(1 0 0 / 8%);
+  --sidebar-ring:    oklch(0.72 0.13 175);
 }
 
 /* ─────────────────────────────────────────────
    BASE STYLES
-───────────────────────────────────────────── */
+ ───────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -252,7 +240,7 @@
 
 /* ─────────────────────────────────────────────
    GLOBAL HELPER ANIMATIONS
-───────────────────────────────────────────── */
+ ───────────────────────────────────────────── */
 
 /* subtle float */
 @keyframes float-slow {
@@ -260,17 +248,17 @@
   50%       { transform: translateY(-4px); }
 }
 
-/* indigo glow pulse */
+/* teal glow pulse */
 @keyframes glow-pulse {
   0%, 100% {
     box-shadow:
-      0 0 8px  oklch(0.511 0.241 264 / 25%),
-      0 0 20px oklch(0.511 0.241 264 / 10%);
+      0 0 8px  oklch(0.58 0.17 175 / 25%),
+      0 0 20px oklch(0.58 0.17 175 / 10%);
   }
   50% {
     box-shadow:
-      0 0 16px oklch(0.511 0.241 264 / 45%),
-      0 0 36px oklch(0.511 0.241 264 / 20%);
+      0 0 16px oklch(0.58 0.17 175 / 45%),
+      0 0 36px oklch(0.58 0.17 175 / 20%);
   }
 }
 
@@ -288,7 +276,7 @@
    SECTION ALTERNATION PATTERN
    Even sections get a very subtle tinted surface.
    Ensures visual rhythm without clashing colours.
-───────────────────────────────────────────── */
+ ───────────────────────────────────────────── */
 .section-alt {
   background: var(--surface-alt);
 }
@@ -297,21 +285,21 @@
    BRAND GRADIENT — single source of truth
    Use these classes everywhere instead of
    hardcoding gradient colours per component.
-───────────────────────────────────────────── */
+ ───────────────────────────────────────────── */
 
 /* Filled gradient (buttons, badges) */
 .brand-gradient {
   background: linear-gradient(
     135deg,
-    oklch(0.511 0.241 264),  /* indigo-600 */
-    oklch(0.459 0.25 280)    /* indigo-700 / violet edge */
+    oklch(0.58 0.17 175),  /* teal-700 */
+    oklch(0.64 0.16 175)   /* teal-600 */
   );
 }
 .dark .brand-gradient {
   background: linear-gradient(
     135deg,
-    oklch(0.585 0.213 264),  /* indigo-500 */
-    oklch(0.511 0.241 264)   /* indigo-600 */
+    oklch(0.64 0.16 175),  /* teal-600 */
+    oklch(0.72 0.13 175)   /* teal-400 */
   );
 }
 
@@ -319,8 +307,8 @@
 .brand-gradient-text {
   background: linear-gradient(
     135deg,
-    oklch(0.511 0.241 264) 0%,
-    oklch(0.459 0.25 280) 100%
+    oklch(0.58 0.17 175) 0%,
+    oklch(0.64 0.16 175) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -329,10 +317,11 @@
 .dark .brand-gradient-text {
   background: linear-gradient(
     135deg,
-    oklch(0.682 0.191 264) 0%,
-    oklch(0.585 0.213 264) 100%
+    oklch(0.72 0.13 175) 0%,
+    oklch(0.64 0.16 175) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+

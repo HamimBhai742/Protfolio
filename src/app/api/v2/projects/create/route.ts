@@ -18,6 +18,23 @@ const createProjectSchema = z.object({
   category: z.enum(['web', 'api', 'mobile', 'other']),
   startDate: z.string(),
   endDate: z.string().optional().or(z.literal('')),
+  images: z.array(z.string()).optional(),
+  videoUrl: z.string().url().optional().or(z.literal('')),
+  metrics: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
+  team: z.array(z.object({
+    name: z.string(),
+    role: z.string(),
+    avatar: z.string().optional(),
+    github: z.string().optional().or(z.literal('')),
+    linkedin: z.string().optional().or(z.literal('')),
+  })).optional(),
+  testimonials: z.array(z.object({
+    clientName: z.string(),
+    clientCompany: z.string(),
+    clientAvatar: z.string().optional(),
+    feedback: z.string(),
+    rating: z.number().min(1).max(5),
+  })).optional(),
 });
 
 export async function POST(request: NextRequest) {
